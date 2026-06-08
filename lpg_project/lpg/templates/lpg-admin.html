@@ -1,0 +1,930 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,viewport-fit=cover"/>
+<title>LPG Admin — Backoffice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'css/styles_admin.css' %}"/>
+<link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN
+══════════════════════════════════════════ -->
+<div id="login-screen" {% if user.is_authenticated %}class="out"{% endif %}>
+  <div class="login-box">
+    <div class="login-brand">
+      <div class="logo-ring"><span>LPG</span></div>
+      <h1>LES PENSEURS DU GABON</h1>
+      <p>Interface d'administration</p>
+    </div>
+    <div class="login-error" id="login-error">⚠️ Identifiants incorrects. Veuillez réessayer.</div>
+    <div class="fg">
+      <label>Identifiant</label>
+      <input type="text" id="lu" placeholder="admin" autocomplete="username" inputmode="text"/>
+    </div>
+    <div class="fg">
+      <label>Mot de passe</label>
+      <input type="password" id="lp" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="btn-login" onclick="doLogin()">SE CONNECTER</button>
+    <p class="login-hint">Démo : <strong>admin</strong> / <strong>lpg2024</strong></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP
+══════════════════════════════════════════ -->
+<div id="app" {% if user.is_authenticated %}class="visible"{% endif %}>
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()" aria-label="Menu">☰</button>
+    <div class="topbar-brand">
+      <div class="brand-icon"><span>LPG</span></div>
+      <div class="brand-txt">
+        <h2>L.P.G Admin</h2>
+        <p>Backoffice v1.0</p>
+      </div>
+    </div>
+    <div class="topbar-sep"></div>
+    <p class="topbar-title" id="topbar-title"><span>Tableau de bord</span></p>
+    <div class="topbar-right">
+      <div class="saved-badge" id="saved-badge">✓ Sauvegardé</div>
+      <div class="user-chip">
+        <div class="avatar" id="avatar-i">{{ user.username|default:'A'|slice:':2'|upper }}</div>
+        <span class="uname" id="uname-chip">{{ user.username|default:'Admin' }}</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Quitter</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-area">
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+      <div class="nav-sec-label">Principal</div>
+      <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
+        <span class="ni">⬛</span><span class="nl">Tableau de bord</span>
+      </div>
+
+      <div class="nav-sec-label" style="margin-top:.4rem">Contenu du site</div>
+      <div class="nav-item" data-page="config" onclick="showPage('config',this)">
+        <span class="ni">⚙️</span><span class="nl">Configuration</span>
+      </div>
+      <div class="nav-item" data-page="mission" onclick="showPage('mission',this)">
+        <span class="ni">📋</span><span class="nl">Mission &amp; Vision</span>
+      </div>
+      <div class="nav-item" data-page="values" onclick="showPage('values',this)">
+        <span class="ni">💎</span><span class="nl">Valeurs</span>
+        <span class="nc">4</span>
+      </div>
+      <div class="nav-item" data-page="objectives" onclick="showPage('objectives',this)">
+        <span class="ni">🎯</span><span class="nl">Objectifs</span>
+        <span class="nc">4</span>
+      </div>
+      <div class="nav-item" data-page="actions" onclick="showPage('actions',this)">
+        <span class="ni">⚡</span><span class="nl">Actions</span>
+        <span class="nc">6</span>
+      </div>
+      <div class="nav-item" data-page="organisation" onclick="showPage('organisation',this)">
+        <span class="ni">🏛️</span><span class="nl">Organisation</span>
+      </div>
+      <div class="nav-item" data-page="membership" onclick="showPage('membership',this)">
+        <span class="ni">💳</span><span class="nl">Adhésion &amp; Tarifs</span>
+      </div>
+      <div class="nav-item" data-page="contact" onclick="showPage('contact',this)">
+        <span class="ni">📞</span><span class="nl">Contact</span>
+      </div>
+
+      <div class="nav-sec-label" style="margin-top:.4rem">Système</div>
+      <div class="nav-item" data-page="users" onclick="showPage('users',this)">
+        <span class="ni">👤</span><span class="nl">Utilisateurs</span>
+      </div>
+      <div class="nav-item" data-page="api" onclick="showPage('api',this)">
+        <span class="ni">🔌</span><span class="nl">API &amp; Intégration</span>
+      </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ═══ DASHBOARD ═══ -->
+      <div class="page active" id="page-dashboard">
+        <div class="breadcrumb"><span>Accueil</span></div>
+        <div class="page-header">
+          <div class="ph-left">
+            <h2>Tableau de bord</h2>
+            <p>Vue d'ensemble du site Les Penseurs du Gabon</p>
+          </div>
+          <a href="{% url 'home' %}" target="_blank" class="btn btn-secondary">🌐 Voir le site</a>
+        </div>
+        <div class="stats-grid">
+          <div class="stat-box"><span class="si">🎯</span><span class="sv" id="dash-objectives-count">0</span><span class="sl">Objectifs</span></div>
+          <div class="stat-box"><span class="si">⚡</span><span class="sv" id="dash-actions-count">0</span><span class="sl">Actions</span></div>
+          <div class="stat-box"><span class="si">👥</span><span class="sv" id="dash-members-count">0</span><span class="sl">Membres bureau</span></div>
+          <div class="stat-box"><span class="si">💳</span><span class="sv" id="dash-plans-count">0</span><span class="sl">Plans adhésion</span></div>
+        </div>
+        <div class="alert alert-info">ℹ️ Mode démonstration — modifications simulées en mémoire. Connectez l'API Django pour persister les données.</div>
+        <div class="card">
+          <div class="card-title"><span>📋</span> Sections du site</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Section</th><th>Statut</th><th>Modif.</th></tr></thead>
+              <tbody>
+                <tr><td class="pr">Configuration</td><td><span class="badge bg-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="pr">Mission &amp; Vision</td><td><span class="badge bg-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="pr">Valeurs (×4)</td><td><span class="badge bg-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="pr">Objectifs (×4)</td><td><span class="badge bg-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="pr">Actions (×6)</td><td><span class="badge bg-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="pr">Organisation</td><td><span class="badge bg-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="pr">Adhésion &amp; Tarifs</td><td><span class="badge bg-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="pr">Contact</td><td><span class="badge bg-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+          <div class="card">
+          <div class="card-title"><span>🔌</span> Statut API Django</div>
+          <div class="api-status-row"><span>Endpoint principal</span><span class="badge bg-gold" id="api-status-badge">Mode mock</span></div>
+          <div class="api-url-chip" id="api-url-chip">/api/all/</div>
+          <div style="margin-top:.9rem">
+            <button class="btn btn-secondary btn-sm" onclick="showPage('api',document.querySelector('[data-page=api]'))">Configurer l'API →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ CONFIG ═══ -->
+      <div class="page" id="page-config">
+        <div class="breadcrumb"><span>Config.</span><span class="sep">›</span><span>Générale</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>Configuration générale</h2><p>Informations de base de l'association</p></div>
+          <button class="btn btn-primary" onclick="saveSection('config')">💾 Sauvegarder</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>🏷️</span> Identité</div>
+          <div class="form-row c2">
+            <div class="field"><label>Nom complet</label><input type="text" id="cfg-name" value="Les Penseurs du Gabon"/></div>
+            <div class="field"><label>Acronyme</label><input type="text" id="cfg-acronym" value="L.P.G"/></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Slogan / Tagline</label><input type="text" id="cfg-tagline" value="Pour un Gabon Meilleur"/></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Description courte</label><textarea id="cfg-description">Association citoyenne de réflexion, d'action et d'amélioration du développement du Gabon</textarea></div>
+          </div>
+          <div class="form-row c3">
+            <div class="field"><label>Année fondation</label><input type="number" id="cfg-year" value="2024"/></div>
+            <div class="field"><label>Ville</label><input type="text" id="cfg-city" value="Libreville"/></div>
+            <div class="field"><label>Pays</label><input type="text" id="cfg-country" value="Gabon"/></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>📊</span> Statistiques</div>
+          <div class="form-row c3">
+            <div class="field"><label>Membres bureau</label><input type="number" id="cfg-bureau" value="10"/></div>
+            <div class="field"><label>Nb objectifs</label><input type="number" id="cfg-obj-count" value="4"/></div>
+            <div class="field"><label>Label durée</label><input type="text" id="cfg-duration" value="∞"/></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>✍️</span> Devise &amp; CTA</div>
+          <div class="form-row c2">
+            <div class="field"><label>Devise</label><input type="text" id="cfg-motto" value="« Pour un Gabon Meilleur »"/></div>
+            <div class="field"><label>Label devise</label><input type="text" id="cfg-motto-label" value="LA DEVISE DE L.P.G"/></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Texte bouton CTA</label><input type="text" id="cfg-cta" value="ENSEMBLE, BÂTISSONS L'AVENIR 🇬🇦🌍"/></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>🖼️</span> Logo</div>
+          <div class="form-row">
+            <div class="field"><label>URL du logo</label><input type="url" id="cfg-logo" placeholder="https://…/logo.png"/></div>
+          </div>
+          <p style="font-size:.72rem;color:var(--text-muted)">Format recommandé : PNG transparent 400×400px</p>
+        </div>
+      </div>
+
+      <!-- ═══ MISSION ═══ -->
+      <div class="page" id="page-mission">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Mission &amp; Vision</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>Mission &amp; Vision</h2><p>Section "Notre Identité"</p></div>
+          <button class="btn btn-primary" onclick="saveSection('mission')">💾 Sauvegarder</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>📝</span> Texte principal</div>
+          <div class="form-row">
+            <div class="field"><label>Titre de section</label><input type="text" id="mission-title" value="Les Penseurs du Gabon"/></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Paragraphe 1</label><textarea id="mission-p1">est une association pour la réflexion, l'action et l'amélioration du développement social, économique et politique du Gabon.</textarea></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Paragraphe 2</label><textarea id="mission-p2">Rassemblant citoyens, intellectuels, artisans et professionnels autour d'un objectif commun : contribuer activement au changement positif du pays.</textarea></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ VALEURS ═══ -->
+      <div class="page" id="page-values">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Valeurs</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>Valeurs</h2><p>Grille 2×2 dans la section Mission</p></div>
+          <button class="btn btn-primary" onclick="openModal('value',null)">+ Ajouter</button>
+        </div>
+        <div id="values-list"></div>
+      </div>
+
+      <!-- ═══ OBJECTIFS ═══ -->
+      <div class="page" id="page-objectives">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Objectifs</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>Objectifs fondamentaux</h2><p>Grille 2×2 brun foncé</p></div>
+          <button class="btn btn-primary" onclick="openModal('objective',null)">+ Ajouter</button>
+        </div>
+        <div id="objectives-list"></div>
+      </div>
+
+      <!-- ═══ ACTIONS ═══ -->
+      <div class="page" id="page-actions">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Actions</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>Actions principales</h2><p>Grille 3×2 fond crème</p></div>
+          <button class="btn btn-primary" onclick="openModal('action',null)">+ Ajouter</button>
+        </div>
+        <div id="actions-list"></div>
+      </div>
+
+      <!-- ═══ ORGANISATION ═══ -->
+      <div class="page" id="page-organisation">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Organisation</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>Organisation &amp; Gouvernance</h2><p>Bureau et types de membres</p></div>
+          <button class="btn btn-primary" onclick="saveSection('organisation')">💾 Sauvegarder</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>🏛️</span> Conseil d'Administration</div>
+          <div class="alert alert-info">ℹ️ Chaque entrée correspond à un rôle dans la grille du bureau.</div>
+          <div id="board-roles-list"></div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:.75rem" onclick="addBoardRole()">+ Ajouter un rôle</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>👥</span> Types de membres</div>
+          <div id="member-types-list"></div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:.75rem" onclick="openModal('memberType',null)">+ Ajouter un type</button>
+        </div>
+      </div>
+
+      <!-- ═══ MEMBERSHIP ═══ -->
+      <div class="page" id="page-membership">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Adhésion</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>Adhésion &amp; Cotisations</h2><p>Plans tarifaires</p></div>
+          <button class="btn btn-primary" onclick="saveSection('membership')">💾 Sauvegarder</button>
+        </div>
+        <div id="plans-editor"></div>
+      </div>
+
+      <!-- ═══ CONTACT ═══ -->
+      <div class="page" id="page-contact">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Contact</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>Contact &amp; Réseaux</h2><p>Coordonnées affichées en bas de page</p></div>
+          <button class="btn btn-primary" onclick="saveSection('contact')">💾 Sauvegarder</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>📍</span> Coordonnées</div>
+          <div class="form-row c2">
+            <div class="field"><label>Adresse / Siège</label><input type="text" id="contact-address" value="Libreville, Gabon"/></div>
+            <div class="field"><label>Email principal</label><input type="email" id="contact-email" value="lespenseursdugabon@gmail.com"/></div>
+          </div>
+          <div class="form-row c2">
+            <div class="field"><label>Téléphone 1</label><input type="tel" id="contact-phone1" value="+(241) 066 431 225"/></div>
+            <div class="field"><label>Téléphone 2</label><input type="tel" id="contact-phone2" value="+(241) 077 217 917"/></div>
+          </div>
+          <div class="form-row">
+            <div class="field"><label>Statut juridique</label><input type="text" id="contact-status" value="Association à durée illimitée"/></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>📢</span> Messages "Rejoignez-nous"</div>
+          <div id="join-statements-list"></div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:.75rem" onclick="openModal('joinStatement',null)">+ Ajouter un message</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>🌐</span> Réseaux sociaux</div>
+          <div class="form-row c2">
+            <div class="field"><label>Facebook</label><input type="url" id="social-fb" placeholder="https://facebook.com/…"/></div>
+            <div class="field"><label>Instagram</label><input type="url" id="social-ig" placeholder="https://instagram.com/…"/></div>
+          </div>
+          <div class="form-row c2">
+            <div class="field"><label>Twitter / X</label><input type="url" id="social-tw" placeholder="https://x.com/…"/></div>
+            <div class="field"><label>WhatsApp</label><input type="url" id="social-wa" placeholder="https://wa.me/…"/></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ USERS ═══ -->
+      <div class="page" id="page-users">
+        <div class="breadcrumb"><span>Système</span><span class="sep">›</span><span>Utilisateurs</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>Utilisateurs</h2><p>Comptes ayant accès au backoffice</p></div>
+          <button class="btn btn-primary" onclick="openModal('user')">+ Nouveau</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Utilisateur</th><th>Email</th><th>Rôle</th><th>Statut</th><th></th></tr></thead>
+              <tbody id="users-table-body"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>🔑</span> Changer le mot de passe</div>
+          <div class="form-row">
+            <div class="field"><label>Mot de passe actuel</label><input type="password" id="pw-current" placeholder="••••••••"/></div>
+          </div>
+          <div class="form-row c2">
+            <div class="field"><label>Nouveau</label><input type="password" id="pw-new" placeholder="••••••••"/></div>
+            <div class="field"><label>Confirmer</label><input type="password" id="pw-confirm" placeholder="••••••••"/></div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="changePassword()">Mettre à jour</button>
+        </div>
+      </div>
+
+      <!-- ═══ API ═══ -->
+      <div class="page" id="page-api">
+        <div class="breadcrumb"><span>Système</span><span class="sep">›</span><span>API</span></div>
+        <div class="page-header">
+          <div class="ph-left"><h2>API &amp; Intégration Django</h2><p>Connexion au backend</p></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>🔌</span> URL de l'API Django</div>
+          <div class="form-row c2">
+            <div class="field"><label>Base URL</label><input type="url" id="api-base-url" placeholder="http://localhost:8000"/></div>
+            <div class="field"><label>Token JWT</label><input type="text" id="api-token" placeholder="eyJhbGciOiJIUzI1NiIs…"/></div>
+          </div>
+          <div style="display:flex;gap:.6rem;flex-wrap:wrap;margin-top:.3rem">
+            <button class="btn btn-secondary btn-sm" onclick="testApi()">🔍 Tester</button>
+            <button class="btn btn-primary btn-sm" onclick="saveApiConfig()">💾 Sauvegarder</button>
+          </div>
+          <div id="api-test-result" style="margin-top:.75rem;font-size:.76rem;display:none"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>📖</span> Référence des endpoints</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/all/</td><td>Tout le contenu ✅</td></tr>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/config/</td><td>Configuration</td></tr>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/about/</td><td>Mission &amp; Vision</td></tr>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/values/</td><td>Valeurs</td></tr>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/objectives/</td><td>Objectifs</td></tr>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/actions/</td><td>Actions</td></tr>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/board-roles/</td><td>Rôles bureau</td></tr>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/member-types/</td><td>Types membres</td></tr>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/membership-plans/</td><td>Plans &amp; tarifs</td></tr>
+                <tr><td><span class="badge bg-green">GET</span></td><td style="font-family:monospace;font-size:.74rem;color:#5ba8c7">/api/contact/</td><td>Coordonnées</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main-area -->
+</div><!-- /app -->
+
+<!-- ══════════════════════════════════════════
+     MODAL
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-drag"></div>
+    <div class="modal-header">
+      <h3 id="modal-title">Modifier</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="saveModal()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── STATE ──────────────────────────────────────── */
+const ST = {
+  user: null,
+  apiBaseUrl: "/api",
+  users: [],
+  config: null,
+  contact: null,
+  values: [],
+  objectives: [],
+  actions: [],
+  boardRoles: [],
+  memberTypes: [],
+  plans: [],
+  joinStatements: [],
+  modal: { type: null, editId: null },
+};
+
+const API_COLLECTIONS = {
+  values: "values",
+  objectives: "objectives",
+  actions: "actions",
+  boardRoles: "board-roles",
+  memberTypes: "member-types",
+  plans: "membership-plans",
+  joinStatements: "join-statements",
+  users: "auth/users",
+};
+
+async function loadSiteData() {
+  try {
+    const response = await fetch(`${ST.apiBaseUrl}/all/`);
+    if (!response.ok) throw new Error(`API error ${response.status}`);
+    const data = await response.json();
+
+    ST.config = data.config || null;
+    ST.contact = data.contact || null;
+    ST.values = data.values || [];
+    ST.objectives = data.objectives || [];
+    ST.actions = data.actions || [];
+    ST.boardRoles = data.board_roles || [];
+    ST.memberTypes = data.member_types || [];
+    ST.plans = data.membership_plans || [];
+    ST.joinStatements = data.join_statements || [];
+    // charge la liste des utilisateurs séparément (peut nécessiter authentification)
+    try{
+      const ru = await fetch(`${ST.apiBaseUrl}/auth/users/`);
+      if(ru.ok){
+        const ud = await ru.json();
+        ST.users = ud.results || [];
+      }else{
+        ST.users = [];
+      }
+    }catch(e){ console.warn('Impossible de charger les utilisateurs :', e); ST.users = []; }
+  } catch (error) {
+    console.error("Chargement des données depuis l'API a échoué :", error);
+  }
+}
+
+/* ─── AUTH ───────────────────────────────────────── */
+const USERS=[{username:"admin",password:"lpg2024",role:"Super Admin",email:"admin@lpg.ga"}];
+document.getElementById("lp").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
+document.getElementById("lu").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
+
+function doLogin(){
+  const u=document.getElementById("lu").value.trim();
+  const p=document.getElementById("lp").value;
+  const found=USERS.find(x=>x.username===u&&x.password===p);
+  if(!found){
+    document.getElementById("login-error").classList.add("show");
+    document.getElementById("lp").value="";
+    return;
+  }
+  ST.user=found;
+  sessionStorage.setItem("lpg_token","mock_jwt_token");
+  sessionStorage.setItem("lpg_user",JSON.stringify(found));
+  document.getElementById("login-screen").classList.add("out");
+  document.getElementById("app").classList.add("visible");
+  document.getElementById("uname-chip").textContent=found.username;
+  document.getElementById("avatar-i").textContent=found.username.substring(0,2).toUpperCase();
+  loadSiteData().then(renderAll);
+}
+function doLogout(){
+  sessionStorage.clear();
+  document.getElementById("login-screen").classList.remove("out");
+  document.getElementById("app").classList.remove("visible");
+  document.getElementById("lu").value="";
+  document.getElementById("lp").value="";
+  document.getElementById("login-error").classList.remove("show");
+  closeSidebar();
+}
+// auto-login
+(function(){
+  const t=sessionStorage.getItem("lpg_token");
+  const u=sessionStorage.getItem("lpg_user");
+  if(t&&u){
+    ST.user=JSON.parse(u);
+    document.getElementById("login-screen").classList.add("out");
+    document.getElementById("app").classList.add("visible");
+    document.getElementById("uname-chip").textContent=ST.user.username;
+    document.getElementById("avatar-i").textContent=ST.user.username.substring(0,2).toUpperCase();
+    loadSiteData().then(renderAll);
+  }
+})();
+
+/* ─── SIDEBAR ────────────────────────────────────── */
+function toggleSidebar(){
+  const s=document.getElementById("sidebar");
+  const o=document.getElementById("sidebar-overlay");
+  const open=s.classList.toggle("open");
+  o.classList.toggle("open",open);
+  document.body.style.overflow=open?"hidden":"";
+}
+function closeSidebar(){
+  document.getElementById("sidebar").classList.remove("open");
+  document.getElementById("sidebar-overlay").classList.remove("open");
+  document.body.style.overflow="";
+}
+
+/* ─── NAVIGATION ─────────────────────────────────── */
+const PAGE_LABELS={
+  dashboard:"Tableau de bord",config:"Configuration",mission:"Mission & Vision",
+  values:"Valeurs",objectives:"Objectifs",actions:"Actions",
+  organisation:"Organisation",membership:"Adhésion & Tarifs",
+  contact:"Contact",users:"Utilisateurs",api:"API & Intégration",
+};
+function showPage(name,el){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  document.getElementById("page-"+name).classList.add("active");
+  if(el)el.classList.add("active");
+  document.getElementById("topbar-title").innerHTML=`<span>${PAGE_LABELS[name]||name}</span>`;
+  closeSidebar();
+  document.querySelector(".content").scrollTop=0;
+}
+
+/* ─── SAVE FEEDBACK ──────────────────────────────── */
+function saveSection(){
+  const b=document.getElementById("saved-badge");
+  b.classList.add("show");
+  setTimeout(()=>b.classList.remove("show"),2600);
+}
+
+/* ─── RENDER ─────────────────────────────────────── */
+function renderAll(){
+  renderList("values-list",ST.values,"value");
+  renderList("objectives-list",ST.objectives,"objective");
+  renderList("actions-list",ST.actions,"action");
+  renderBoardRoles();
+  renderList("member-types-list",ST.memberTypes,"memberType");
+  renderPlans();
+  renderList("join-statements-list",ST.joinStatements,"joinStatement");
+  renderUsers();
+  updateDashboardStats();
+  updateApiStatus();
+}
+
+function updateDashboardStats(){
+  try{
+    const objEl=document.getElementById('dash-objectives-count');
+    const actEl=document.getElementById('dash-actions-count');
+    const memEl=document.getElementById('dash-members-count');
+    const planEl=document.getElementById('dash-plans-count');
+    if(objEl) objEl.textContent = ST.objectives.length || 0;
+    if(actEl) actEl.textContent = ST.actions.length || 0;
+    if(memEl) memEl.textContent = ST.boardRoles.length || 0;
+    if(planEl) planEl.textContent = ST.plans.length || 0;
+  }catch(e){console.error(e)}
+}
+
+function updateApiStatus(){
+  try{
+    const badge=document.getElementById('api-status-badge');
+    const chip=document.getElementById('api-url-chip');
+    if(!badge) return;
+    const base = ST.apiBaseUrl || '/api';
+    if(chip) chip.textContent = base + '/all/';
+    if(base && base !== '/api'){
+      badge.textContent = 'API configurée';
+      badge.classList.remove('bg-gold');
+      badge.classList.remove('bg-red');
+      badge.classList.add('bg-green');
+    } else {
+      badge.textContent = 'Mode mock';
+      badge.classList.remove('bg-green');
+      badge.classList.remove('bg-red');
+      badge.classList.add('bg-gold');
+    }
+  }catch(e){console.error(e)}
+}
+
+function renderList(containerId,items,type){
+  const c=document.getElementById(containerId);
+  if(!c)return;
+  c.innerHTML=items.map(item=>{
+    const icon=item.icon||item.number||"→";
+    const numLabel=item.number?String(item.number).padStart(2,"0"):icon;
+    const title=item.title||item.text;
+    const desc=item.description||"";
+    return `
+      <div class="list-item">
+        <div class="li-num">${numLabel}</div>
+        <div class="li-body">
+          <strong>${title}</strong>
+          ${desc?`<p>${desc}</p>`:""}
+        </div>
+        <div class="li-actions">
+          <button class="btn btn-secondary btn-sm" onclick="openModal('${type}',${item.id})">✏️</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteItem('${typeToColl(type)}',${item.id})">🗑️</button>
+        </div>
+      </div>`;
+  }).join("");
+}
+
+function typeToColl(t){
+  return{value:"values",objective:"objectives",action:"actions",memberType:"memberTypes",joinStatement:"joinStatements"}[t]||t;
+}
+
+function renderUsers(){
+  const c=document.getElementById('users-table-body');
+  if(!c)return;
+  c.innerHTML = ST.users.map(u=>{
+    const status = u.is_active ? '<span class="badge bg-green">Actif</span>' : '<span class="badge bg-red">Inactif</span>';
+    const role = u.is_superuser ? 'Super Admin' : (u.is_staff ? 'Admin' : 'Utilisateur');
+    const avatar = (u.username||'').substring(0,2).toUpperCase();
+    return `<tr>
+      <td><div style="display:flex;align-items:center;gap:.55rem"><div class="avatar" style="width:26px;height:26px;font-size:.58rem">${avatar}</div><span class="pr">${u.username}</span></div></td>
+      <td>${u.email||''}</td>
+      <td><span class="badge bg-gold">${role}</span></td>
+      <td>${status}</td>
+      <td>
+        <button class="btn btn-secondary btn-sm" onclick="openModal('user',${u.id})">Modifier</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('users',${u.id})">Supprimer</button>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
+function renderBoardRoles(){
+  const c=document.getElementById("board-roles-list");
+  if(!c)return;
+  c.innerHTML=`<div class="bg-admin">${ST.boardRoles.map(r=>`
+    <div class="board-role-chip">
+      <span>${r.title}</span>
+      <button onclick="deleteItem('boardRoles',${r.id})" title="Supprimer">✕</button>
+    </div>`).join("")}</div>`;
+}
+
+function renderPlans(){
+  const c=document.getElementById("plans-editor");
+  if(!c)return;
+  c.innerHTML=ST.plans.map(p=>`
+    <div class="plan-editor-card ${p.is_featured?"featured":""}">
+      <div class="plan-editor-header">
+        <div class="peh-left">
+          <span style="font-size:1.1rem">${p.is_featured?"⭐":"👤"}</span>
+          <span style="font-family:var(--font-t);font-size:.82rem;color:var(--gold)">${p.title}</span>
+          ${p.is_featured?'<span class="badge bg-gold">Mis en avant</span>':""}
+        </div>
+        <button class="btn btn-secondary btn-sm" onclick="openModal('plan',${p.id})">✏️ Modifier</button>
+      </div>
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:1rem;align-items:start">
+        <div class="plan-preview-mini">
+          <span class="plan-price-big">${p.price.toLocaleString("fr-FR")}</span>
+          <div class="plan-cur">${p.currency} / ${p.period}</div>
+        </div>
+        <div>
+          <p style="font-size:.76rem;color:var(--text-secondary);margin-bottom:.6rem">${p.subtitle}</p>
+          <ul style="list-style:none">${p.benefits.map(b=>`<li style="font-size:.76rem;color:var(--text-secondary);padding:.22rem 0;border-bottom:1px solid rgba(255,255,255,.05)">✓ ${b}</li>`).join("")}</ul>
+        </div>
+      </div>
+    </div>`).join("");
+}
+
+/* ─── DELETE ─────────────────────────────────────── */
+async function deleteItem(coll,id){
+  if(!confirm("Supprimer cet élément ?"))return;
+  const path = API_COLLECTIONS[coll];
+  if(path){
+    try{
+      const response = await fetch(`${ST.apiBaseUrl}/${path}/${id}/`, {method:"DELETE", credentials: 'same-origin'});
+      if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    }catch(error){
+      alert(`Erreur suppression : ${error.message}`);
+      return;
+    }
+  }
+  ST[coll]=ST[coll].filter(x=>x.id!==id);
+  renderAll();
+  saveSection();
+}
+
+/* ─── BOARD ROLE ADD ─────────────────────────────── */
+async function addBoardRole(){
+  const name=prompt("Nom du rôle :");
+  if(!name||!name.trim())return;
+  const payload={title:name.trim(), order: Math.max(...ST.boardRoles.map(r=>r.order||0),0)+1};
+  try{
+    const response = await fetch(`${ST.apiBaseUrl}/board-roles/`, {
+      method:"POST",
+      credentials: 'same-origin',
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify(payload),
+    });
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    const newRole = await response.json();
+    ST.boardRoles.push(newRole);
+    renderBoardRoles();
+    saveSection();
+  }catch(error){
+    alert(`Erreur création : ${error.message}`);
+  }
+}
+
+/* ─── MODAL ──────────────────────────────────────── */
+const MODAL_CFG={
+  value:{title:"Valeur",fields:[
+    {k:"icon",l:"Icône (emoji)",t:"text",p:"📚"},
+    {k:"title",l:"Titre",t:"text",p:"Éducation & Savoir"},
+    {k:"description",l:"Description",t:"textarea",p:"L'éducation transforme…"},
+  ],coll:"values"},
+  objective:{title:"Objectif",fields:[
+    {k:"number",l:"Numéro",t:"number",p:"1"},
+    {k:"icon",l:"Icône (emoji)",t:"text",p:"💡"},
+    {k:"title",l:"Titre",t:"text",p:"Encourager l'innovation"},
+    {k:"description",l:"Description",t:"textarea",p:"…"},
+  ],coll:"objectives"},
+  action:{title:"Action",fields:[
+    {k:"icon",l:"Icône (emoji)",t:"text",p:"🗣️"},
+    {k:"title",l:"Titre",t:"text",p:"Forums & Débats"},
+    {k:"description",l:"Description",t:"textarea",p:"…"},
+  ],coll:"actions"},
+  memberType:{title:"Type de membre",fields:[
+    {k:"icon",l:"Icône (emoji)",t:"text",p:"⭐"},
+    {k:"title",l:"Titre",t:"text",p:"Membres Fondateurs"},
+    {k:"description",l:"Description",t:"textarea",p:"Ceux qui ont initié…"},
+  ],coll:"memberTypes"},
+  joinStatement:{title:"Message",fields:[
+    {k:"text",l:"Texte du message",t:"text",p:"Pensez grand…"},
+  ],coll:"joinStatements"},
+  plan:{title:"Plan d'adhésion",fields:[
+    {k:"title",l:"Titre",t:"text",p:"MEMBRE SIMPLE"},
+    {k:"price",l:"Tarif (nombre)",t:"number",p:"2000"},
+    {k:"currency",l:"Devise",t:"text",p:"FCFA"},
+    {k:"period",l:"Période",t:"text",p:"mois"},
+    {k:"subtitle",l:"Sous-titre",t:"textarea",p:""},
+    {k:"benefits",l:"Avantages (1 par ligne)",t:"textarea",p:"Accès aux forums\nParticipation aux projets"},
+  ],coll:"plans",
+  tx:{benefits:v=>typeof v==="string"?v.split("\n").map(x=>x.trim()).filter(Boolean):v,
+      benefitsToStr:arr=>Array.isArray(arr)?arr.join("\n"):arr}},
+  user:{title:"Utilisateur",fields:[
+    {k:"username",l:"Nom d'utilisateur",t:"text",p:"jdupont"},
+    {k:"email",l:"Email",t:"text",p:"user@example.com"},
+    {k:"password",l:"Mot de passe",t:"password",p:"••••••"},
+    {k:"password_confirm",l:"Confirmer le mot de passe",t:"password",p:"••••••"},
+    {k:"role",l:"Rôle",t:"text",p:"Admin / Super Admin"},
+  ],coll:"users"},
+};
+
+function openModal(type,id){
+  const cfg=MODAL_CFG[type];
+  if(!cfg)return;
+  ST.modal={type,editId:id};
+  const item=id?ST[cfg.coll].find(x=>x.id===id):null;
+  document.getElementById("modal-title").textContent=id?`Modifier — ${cfg.title}`:`Ajouter — ${cfg.title}`;
+  document.getElementById("modal-body").innerHTML=cfg.fields.map(f=>{
+    let val=item?item[f.k]:"";
+    if(cfg.tx&&f.k==="benefits"&&cfg.tx.benefitsToStr)val=cfg.tx.benefitsToStr(val);
+    return `<div class="field" style="margin-bottom:.9rem">
+      <label>${f.l}</label>
+      ${f.t==="textarea"
+        ?`<textarea id="mf-${f.k}" placeholder="${f.p||""}">${val||""}</textarea>`
+        :`<input type="${f.t}" id="mf-${f.k}" value="${val||""}" placeholder="${f.p||""}"/>`}
+    </div>`;
+  }).join("");
+  document.getElementById("modal-overlay").classList.add("open");
+  document.body.style.overflow="hidden";
+  // focus first field
+  setTimeout(()=>{const el=document.querySelector("#modal-body input,#modal-body textarea");if(el)el.focus()},100);
+}
+
+function closeModal(){
+  document.getElementById("modal-overlay").classList.remove("open");
+  document.body.style.overflow="";
+}
+function closeModalOutside(e){if(e.target===document.getElementById("modal-overlay"))closeModal()}
+
+async function saveModal(){
+  const{type,editId}=ST.modal;
+  const cfg=MODAL_CFG[type];
+  if(!cfg)return;
+  const data={};
+  cfg.fields.forEach(f=>{
+    let v=document.getElementById("mf-"+f.k).value;
+    if(f.t==="number")v=parseInt(v)||0;
+    if(cfg.tx&&cfg.tx[f.k])v=cfg.tx[f.k](v);
+    data[f.k]=v;
+  });
+  const path=API_COLLECTIONS[cfg.coll];
+  if(path){
+    // validation côté client pour utilisateurs (confirmation du mot de passe)
+    if(cfg.coll === 'users'){
+      const pw = data.password || '';
+      const pwcEl = document.getElementById('mf-password_confirm');
+      const pwc = pwcEl ? pwcEl.value : '';
+      if(!editId){
+        if(!pw){ alert('Veuillez saisir un mot de passe.'); return; }
+        if(pw.length < 8){ alert('Le mot de passe doit contenir au moins 8 caractères.'); return; }
+        if(pw !== pwc){ alert('Les mots de passe ne correspondent pas.'); return; }
+      } else {
+        if(pw){ if(pw.length < 8){ alert('Le mot de passe doit contenir au moins 8 caractères.'); return; } if(pw !== pwc){ alert('Les mots de passe ne correspondent pas.'); return; } }
+      }
+      // retirer la confirmation du payload
+      delete data.password_confirm;
+    }
+    try{
+      const method = editId ? "PUT" : "POST";
+      const url = editId ? `${ST.apiBaseUrl}/${path}/${editId}/` : `${ST.apiBaseUrl}/${path}/`;
+      const response = await fetch(url, {
+        method,
+        credentials: 'same-origin',
+        headers:{"Content-Type":"application/json"},
+        body: JSON.stringify(data),
+      });
+      if(!response.ok) throw new Error(`HTTP ${response.status}`);
+      const result = await response.json();
+      if(editId){
+        const idx=ST[cfg.coll].findIndex(x=>x.id===editId);
+        if(idx!==-1)ST[cfg.coll][idx]=result;
+      }else{
+        ST[cfg.coll].push(result);
+      }
+      closeModal();
+      renderAll();
+      saveSection();
+      return;
+    }catch(error){
+      alert(`Erreur sauvegarde : ${error.message}`);
+      console.error(error);
+      return;
+    }
+  }
+  if(editId){
+    const idx=ST[cfg.coll].findIndex(x=>x.id===editId);
+    if(idx!==-1)ST[cfg.coll][idx]={...ST[cfg.coll][idx],...data};
+  }else{
+    const newId=Math.max(...ST[cfg.coll].map(x=>x.id),0)+1;
+    ST[cfg.coll].push({id:newId,...data});
+  }
+  closeModal();
+  renderAll();
+  saveSection();
+}
+
+/* ─── PASSWORD ───────────────────────────────────── */
+function changePassword(){
+  const cur=document.getElementById("pw-current").value;
+  const nw=document.getElementById("pw-new").value;
+  const conf=document.getElementById("pw-confirm").value;
+  if(!cur||!nw||!conf){alert("Veuillez remplir tous les champs.");return}
+  if(nw!==conf){alert("Les mots de passe ne correspondent pas.");return}
+  const u=USERS.find(x=>x.password===cur);
+  if(!u){alert("Mot de passe actuel incorrect.");return}
+  u.password=nw;
+  alert("✓ Mot de passe modifié avec succès.");
+  ["pw-current","pw-new","pw-confirm"].forEach(id=>document.getElementById(id).value="");
+}
+
+/* ─── API TEST ────────────────────────────────────── */
+async function testApi(){
+  const base=document.getElementById("api-base-url").value.trim();
+  const out=document.getElementById("api-test-result");
+  out.style.display="block";
+  out.innerHTML='<span style="color:var(--text-secondary)">⏳ Test en cours…</span>';
+  if(!base){out.innerHTML='<span style="color:#e74c3c">⚠️ Veuillez saisir une URL.</span>';return}
+  try{
+    const r=await fetch(base+"/api/all/",{signal:AbortSignal.timeout(5000)});
+    out.innerHTML=r.ok
+      ?'<span style="color:#4CAF50">✓ Connexion réussie ! L\'API Django répond correctement.</span>'
+      :`<span style="color:#e74c3c">✗ Erreur HTTP ${r.status}</span>`;
+  }catch(e){
+    out.innerHTML=`<span style="color:#e74c3c">✗ Impossible de joindre l'API : ${e.message}</span>`;
+  }
+}
+function saveApiConfig(){
+  const b=document.getElementById("api-base-url").value.trim();
+  if(b)localStorage.setItem("lpg_api_base",b);
+  saveSection();
+}
+const savedApi=localStorage.getItem("lpg_api_base");
+if(savedApi){const el=document.getElementById("api-base-url");if(el)el.value=savedApi}
+
+// Si l'utilisateur est déjà connecté côté serveur, charger les données immédiatement
+document.addEventListener('DOMContentLoaded', function(){
+  try{
+    const appEl = document.getElementById('app');
+    if(appEl && appEl.classList.contains('visible')){
+      // charge et rend les données depuis l'API
+      loadSiteData().then(renderAll).catch(err=>console.error(err));
+    }
+  }catch(e){console.error(e)}
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Connexion | LPG Admin</title>
+  <link rel="stylesheet" href="{% static 'css/styles_admin.css' %}" />
+</head>
+<body>
+  <div id="login-screen">
+    <div class="login-box">
+      <div class="login-brand">
+        <div class="logo-ring"><span>LPG</span></div>
+        <h1>Connexion LPG</h1>
+        <p>Connectez-vous avec votre email pour accéder à l'administration.</p>
+      </div>
+
+      {% if form.non_field_errors %}
+        <div class="login-error show">
+          {{ form.non_field_errors }}
+        </div>
+      {% endif %}
+
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}" />
+        <div class="fg">
+          {{ form.email.label_tag }}
+          {{ form.email }}
+          {{ form.email.errors }}
+        </div>
+        <div class="fg">
+          {{ form.password.label_tag }}
+          {{ form.password }}
+          {{ form.password.errors }}
+        </div>
+        <div class="fg" style="margin-bottom:1rem;">
+          <label style="font-size:.85rem;color:var(--text-secondary);">
+            {{ form.remember_me }} {{ form.remember_me.label }}
+          </label>
+        </div>
+        <button type="submit" class="btn-login">Se connecter</button>
+      </form>
+      <p class="login-hint"><a href="{% url 'password_reset' %}" style="color:var(--text-primary);text-decoration:underline;">Mot de passe oublié ?</a></p>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,252 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Les Penseurs du Gabon — L.P.G</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Lato:ital,wght@0,300;0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{% static 'css/styles.css' %}"/>
+<link rel="shortcut icon" href="{% static 'favicon.ico' %}" type="image/x-icon">
+</head>
+<body>
+
+<div id="loading"><div class="spinner"></div><p>Chargement…</p></div>
+
+<!-- DRAPEAU -->
+<div class="flag"><span class="g"></span><span class="y"></span><span class="b"></span></div>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-brand" id="nav-brand">L.P.G</span>
+  <div class="nav-links-wrap">
+    <ul class="nav-links">
+      <li><a href="#mission">Mission</a></li>
+      <li><a href="#objectives">Objectifs</a></li>
+      <li><a href="#actions">Actions</a></li>
+      <li><a href="#organisation">Organisation</a></li>
+      <li><a href="#membership">Adhésion</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+  <button class="burger" id="burger" aria-label="Menu" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- MENU MOBILE -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#mission"      onclick="closeMenu()">Mission &amp; Vision</a>
+  <a href="#objectives"   onclick="closeMenu()">Objectifs</a>
+  <a href="#actions"      onclick="closeMenu()">Actions</a>
+  <a href="#organisation" onclick="closeMenu()">Organisation</a>
+  <a href="#membership"   onclick="closeMenu()">Adhésion</a>
+  <a href="#contact"      onclick="closeMenu()">Contact</a>
+  <a href="#contact" class="cta-mobile" onclick="closeMenu()">Nous rejoindre</a>
+</div>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <img class="hero-logo" id="hero-logo"
+       src="{% static 'images/logo.jpg' %}" alt="Logo LPG"/>
+  <p class="hero-meta" id="hero-meta">L.P.G · FONDÉE EN 2024 · LIBREVILLE, GABON</p>
+  <h1 class="hero-title" id="hero-title">LES PENSEURS DU GABON</h1>
+  <p class="hero-tagline" id="hero-tagline">Pour un Gabon Meilleur</p>
+  <p class="hero-desc" id="hero-description">
+    Association citoyenne de réflexion, d'action et d'amélioration du développement du Gabon
+  </p>
+  <div class="stats-row" id="stats-row">
+    <div class="stat-card">
+      <span class="stat-val" id="stat-year">2024</span>
+      <span class="stat-lbl">Fondation</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val" id="stat-members">10</span>
+      <span class="stat-lbl">Membres bureau</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val" id="stat-objectives">4</span>
+      <span class="stat-lbl">Objectifs</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-val" id="stat-duration">∞</span>
+      <span class="stat-lbl">Durée</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ MISSION ══ -->
+<section id="mission">
+  <div class="sh">
+    <p class="ov">NOTRE IDENTITÉ</p>
+    <h2>Mission &amp; Vision</h2>
+  </div>
+  <div class="mission-body">
+    <div class="mission-text reveal">
+      <h3 id="about-title">Les Penseurs du Gabon</h3>
+      <p id="about-p1">est une association pour la réflexion, l'action et l'amélioration du développement social, économique et politique du Gabon.</p>
+      <p id="about-p2">Rassemblant citoyens, intellectuels, artisans et professionnels autour d'un objectif commun : contribuer activement au changement positif du pays.</p>
+      <div class="motto-block">
+        <p class="quote" id="motto-text">« Pour un Gabon Meilleur »</p>
+        <p class="ql" id="motto-label">LA DEVISE DE L.P.G</p>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="values-grid" id="values-grid"></div>
+      <img class="mission-logo" id="mission-logo"
+           src="https://via.placeholder.com/140x140/3D1A00/C8A200?text=LPG" alt="Logo LPG"/>
+    </div>
+  </div>
+</section>
+
+<!-- ══ OBJECTIFS ══ -->
+<section id="objectives">
+  <div class="sh">
+    <p class="ov">CE QUE NOUS FAISONS</p>
+    <h2 id="obj-heading">Nos 4 Objectifs Fondamentaux</h2>
+  </div>
+  <div class="obj-grid" id="objectives-grid"></div>
+</section>
+
+<!-- ══ ACTIONS ══ -->
+<section id="actions">
+  <div class="sh">
+    <p class="ov">SUR LE TERRAIN</p>
+    <h2>Nos Actions Principales</h2>
+  </div>
+  <div class="actions-grid" id="actions-grid"></div>
+</section>
+
+<!-- ══ ORGANISATION ══ -->
+<section id="organisation">
+  <div class="sh">
+    <p class="ov">NOTRE STRUCTURE</p>
+    <h2>Organisation &amp; Gouvernance</h2>
+  </div>
+  <div class="org-body">
+    <div class="org-col reveal">
+      <h3 id="board-heading">Conseil d'Administration – 10 membres élus</h3>
+      <div class="board-grid" id="board-grid"></div>
+    </div>
+    <div class="org-col reveal">
+      <h3>Types de membres</h3>
+      <div class="mtype-list" id="member-type-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ ADHÉSION ══ -->
+<section id="membership">
+  <div class="sh">
+    <p class="ov">NOUS REJOINDRE</p>
+    <h2>Adhésion &amp; Cotisations</h2>
+  </div>
+  <div class="plans-wrap" id="plans-wrap"></div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="sh">
+    <p class="ov">NOUS REJOINDRE</p>
+    <h2>Nous Contacter</h2>
+  </div>
+  <div class="contact-body">
+    <div class="contact-items reveal" id="contact-items"></div>
+    <div class="reveal">
+      <div class="join-box">
+        <h2>REJOIGNEZ <span>LE MOUVEMENT !</span></h2>
+        <ul class="join-list" id="join-statements"></ul>
+        <a class="cta-btn" id="cta-btn" href="#">ENSEMBLE, BÂTISSONS L'AVENIR 🇬🇦🌍</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="flag"><span class="g"></span><span class="y"></span><span class="b"></span></div>
+<footer id="footer-text">© 2026 Les Penseurs du Gabon — L.P.G · Libreville, Gabon · Pour un Gabon Meilleur</footer>
+
+<script>
+/* ── BURGER ── */
+function toggleMenu(){
+  const m=document.getElementById("mobile-menu");
+  const b=document.getElementById("burger");
+  const open=m.classList.toggle("open");
+  b.classList.toggle("open",open);
+  document.body.style.overflow=open?"hidden":"";
+}
+function closeMenu(){
+  document.getElementById("mobile-menu").classList.remove("open");
+  document.getElementById("burger").classList.remove("open");
+  document.body.style.overflow="";
+}
+
+// const API_BASE=window.LPG_API_BASE||null;
+const API_BASE = window.location.origin;
+async function fetchAll(){
+  if(!API_BASE)return MOCK;
+  const r=await fetch(`${API_BASE}/api/all/`);
+  if(!r.ok)throw new Error(r.status);
+  return r.json();
+}
+
+function render(data){
+  const c=data.config;
+  document.title=c.org_name+" — "+c.acronym;
+  document.getElementById("nav-brand").textContent=c.acronym;
+  document.getElementById("hero-meta").textContent=c.acronym+" · FONDÉE EN "+c.founded_year+" · "+c.city.toUpperCase()+", "+c.country.toUpperCase();
+  document.getElementById("hero-title").textContent=c.org_name.toUpperCase();
+  document.getElementById("hero-tagline").textContent=c.tagline;
+  document.getElementById("hero-description").textContent=c.description;
+  document.getElementById("stat-year").textContent=c.founded_year;
+  document.getElementById("stat-members").textContent=c.bureau_members_count;
+  document.getElementById("stat-objectives").textContent=c.objectives_count;
+  document.getElementById("stat-duration").textContent=c.duration_label;
+  if(c.logo_url){document.getElementById("mission-logo").src=c.logo_url}
+  document.getElementById("footer-text").textContent="© "+c.founded_year+" "+c.org_name+" — "+c.acronym+" · "+c.city+", "+c.country+" · "+c.tagline;
+
+  const a=data.about;
+  document.getElementById("about-title").textContent=a.title;
+  document.getElementById("about-p1").textContent=a.paragraph1;
+  document.getElementById("about-p2").textContent=a.paragraph2;
+  document.getElementById("motto-text").textContent=c.motto;
+  document.getElementById("motto-label").textContent=c.motto_label;
+
+  document.getElementById("values-grid").innerHTML=data.values.map(v=>`<div class="val-card reveal"><h4>${v.icon} ${v.title}</h4><p>${v.description}</p></div>`).join("");
+    console.log(data.values);
+  document.getElementById("obj-heading").textContent="Nos "+data.objectives.length+" Objectifs Fondamentaux";
+  document.getElementById("objectives-grid").innerHTML=data.objectives.map(o=>`<div class="obj-card reveal"><span class="obj-icon">${o.icon}</span><h3 class="obj-title">${o.title}</h3><p class="obj-desc">${o.description}</p><span class="obj-num">${String(o.number).padStart(2,"0")}</span></div>`).join("");
+
+  document.getElementById("actions-grid").innerHTML=data.actions.map(a=>`<div class="act-card reveal"><span class="act-icon">${a.icon}</span><h3 class="act-title">${a.title}</h3><p class="act-desc">${a.description}</p></div>`).join("");
+
+  document.getElementById("board-heading").textContent="Conseil d'Administration – "+data.board_roles.length+" membres élus";
+  document.getElementById("board-grid").innerHTML=data.board_roles.map(r=>`<div class="board-role">${r.title}</div>`).join("");
+  document.getElementById("member-type-list").innerHTML=data.member_types.map(m=>`<div class="mtype-card reveal"><h4>${m.icon} ${m.title}</h4><p>${m.description}</p></div>`).join("");
+
+  document.getElementById("plans-wrap").innerHTML=data.membership_plans.map(p=>`<div class="plan-card ${p.is_featured?"plan-light":"plan-dark"} reveal"><div class="plan-price">${p.price.toLocaleString("fr-FR")}</div><div class="plan-currency">${p.currency} / ${p.period}</div><h3 class="plan-title">${p.title}</h3><p class="plan-sub">${p.subtitle}</p><ul class="plan-benefits">${p.benefits.map(b=>`<li>${b}</li>`).join("")}</ul></div>`).join("");
+
+  document.getElementById("contact-items").innerHTML=`<div class="ci"><label>Siège Social</label><p>${data.contact.address}</p></div><div class="ci"><label>Téléphone</label>${data.contact.phones.map(p=>`<p>${p}</p>`).join("")}</div><div class="ci"><label>Email</label><p><a href="mailto:${data.contact.email}">${data.contact.email}</a></p></div><div class="ci"><label>Statut</label><p>${data.contact.status}</p></div>`;
+  document.getElementById("join-statements").innerHTML=data.join_statements.map(s=>`<li>${s.text}</li>`).join("");
+  const btn=document.getElementById("cta-btn");
+  btn.textContent=c.cta_label;
+  btn.href="mailto:"+data.contact.email;
+}
+
+function initReveal(){
+  const obs=new IntersectionObserver(entries=>{
+    entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");obs.unobserve(e.target)}});
+  },{threshold:.1});
+  document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
+}
+
+(async()=>{
+  try{const data=await fetchAll();render(data)}catch(e){console.error(e)}
+  const l=document.getElementById("loading");
+  l.classList.add("hidden");
+  setTimeout(()=>l.remove(),500);
+  setTimeout(initReveal,80);
+})();
+</script>
+</body>
+</html>

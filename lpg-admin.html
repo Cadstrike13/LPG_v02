@@ -1,0 +1,1706 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>LPG Admin — Backoffice</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+<style>
+/* ════════════════════════════════════════════════
+   TOKENS
+════════════════════════════════════════════════ */
+:root{
+  --bg-base:    #0D0D0D;
+  --bg-surface: #151515;
+  --bg-card:    #1C1C1C;
+  --bg-hover:   #222222;
+  --bg-input:   #111111;
+
+  --border:     #2A2A2A;
+  --border-focus:#C8A200;
+
+  --gold:       #C8A200;
+  --gold-dim:   #8A6E00;
+  --gold-glow:  rgba(200,162,0,.15);
+
+  --green:      #009A00;
+  --green-dim:  #006600;
+  --red:        #C0392B;
+  --red-dim:    #7A1E15;
+  --blue:       #2E86AB;
+
+  --text-primary:#F0EAD6;
+  --text-secondary:#8A8070;
+  --text-muted:  #555045;
+
+  --brown-accent:#5C2E00;
+
+  --sidebar-w:  240px;
+  --topbar-h:   56px;
+  --radius:     8px;
+  --radius-sm:  5px;
+
+  --font-title: 'Cinzel',serif;
+  --font-body:  'DM Sans',sans-serif;
+
+  --shadow:     0 4px 24px rgba(0,0,0,.5);
+  --shadow-gold:0 0 20px rgba(200,162,0,.2);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font-body);background:var(--bg-base);color:var(--text-primary);font-size:14px}
+
+/* ════════════════════════════════════════════════
+   LOGIN SCREEN
+════════════════════════════════════════════════ */
+#login-screen{
+  position:fixed;inset:0;z-index:9999;
+  background:var(--bg-base);
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .4s;
+}
+#login-screen.out{opacity:0;pointer-events:none}
+
+.login-box{
+  width:400px;
+  background:var(--bg-surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:2.5rem 2rem;
+  box-shadow:var(--shadow);
+  animation:slideUp .5s ease both;
+}
+.login-brand{
+  text-align:center;
+  margin-bottom:2rem;
+}
+.login-brand .logo-ring{
+  width:72px;height:72px;
+  border-radius:50%;
+  border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto .8rem;
+  background:var(--bg-card);
+  box-shadow:var(--shadow-gold);
+}
+.login-brand .logo-ring span{font-family:var(--font-title);font-size:.75rem;color:var(--gold);letter-spacing:.1em}
+.login-brand h1{font-family:var(--font-title);font-size:1rem;color:var(--gold);letter-spacing:.1em}
+.login-brand p{font-size:.75rem;color:var(--text-secondary);margin-top:.25rem}
+
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:.72rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--text-secondary);margin-bottom:.4rem}
+.form-group input{
+  width:100%;
+  background:var(--bg-input);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:.65rem .9rem;
+  color:var(--text-primary);
+  font-family:var(--font-body);
+  font-size:.88rem;
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.form-group input:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gold-glow)}
+.form-group input::placeholder{color:var(--text-muted)}
+
+.login-error{
+  background:rgba(192,57,43,.12);
+  border:1px solid var(--red-dim);
+  border-radius:var(--radius-sm);
+  padding:.6rem .9rem;
+  font-size:.8rem;
+  color:#e74c3c;
+  margin-bottom:1rem;
+  display:none;
+}
+.login-error.show{display:block}
+
+.btn-login{
+  width:100%;
+  background:var(--gold);
+  color:#1A0F00;
+  border:none;
+  border-radius:var(--radius-sm);
+  padding:.75rem;
+  font-family:var(--font-title);
+  font-size:.82rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:background .2s,transform .15s;
+}
+.btn-login:hover{background:#e0b800;transform:translateY(-1px)}
+.btn-login:active{transform:translateY(0)}
+
+.login-hint{text-align:center;font-size:.72rem;color:var(--text-muted);margin-top:1rem}
+.login-hint strong{color:var(--text-secondary)}
+
+/* ════════════════════════════════════════════════
+   DASHBOARD LAYOUT
+════════════════════════════════════════════════ */
+#app{display:none;height:100vh;flex-direction:column}
+#app.visible{display:flex}
+
+/* TOPBAR */
+.topbar{
+  height:var(--topbar-h);
+  background:var(--bg-surface);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;
+  padding:0 1.2rem 0 0;
+  flex-shrink:0;
+  gap:1rem;
+  z-index:100;
+}
+.topbar-brand{
+  width:var(--sidebar-w);
+  flex-shrink:0;
+  display:flex;align-items:center;gap:.7rem;
+  padding:0 1.2rem;
+  border-right:1px solid var(--border);
+  height:100%;
+}
+.topbar-brand .brand-icon{
+  width:32px;height:32px;border-radius:50%;
+  border:1.5px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  background:var(--bg-card);
+  flex-shrink:0;
+}
+.topbar-brand .brand-icon span{font-family:var(--font-title);font-size:.55rem;color:var(--gold)}
+.topbar-brand h2{font-family:var(--font-title);font-size:.72rem;color:var(--gold);letter-spacing:.08em;line-height:1.2}
+.topbar-brand p{font-size:.62rem;color:var(--text-muted)}
+
+.topbar-center{flex:1;display:flex;align-items:center;padding-left:.5rem}
+.topbar-title{font-size:.82rem;font-weight:600;color:var(--text-secondary)}
+.topbar-title span{color:var(--text-primary)}
+
+.topbar-right{display:flex;align-items:center;gap:.8rem;margin-left:auto}
+
+.saved-badge{
+  background:rgba(0,154,0,.12);
+  border:1px solid var(--green-dim);
+  color:#4CAF50;
+  border-radius:100px;
+  padding:.25rem .8rem;
+  font-size:.72rem;
+  font-weight:600;
+  display:none;
+  animation:fadeIn .3s ease;
+}
+.saved-badge.show{display:flex;align-items:center;gap:.3rem}
+
+.user-chip{
+  display:flex;align-items:center;gap:.5rem;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:100px;
+  padding:.3rem .8rem .3rem .4rem;
+  cursor:pointer;
+  transition:border-color .2s;
+}
+.user-chip:hover{border-color:var(--gold)}
+.avatar{
+  width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,var(--gold),var(--brown-accent));
+  display:flex;align-items:center;justify-content:center;
+  font-size:.65rem;font-weight:700;color:#1A0F00;
+}
+.user-chip span{font-size:.78rem;color:var(--text-primary)}
+
+.btn-logout{
+  background:transparent;
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  color:var(--text-secondary);
+  padding:.35rem .75rem;
+  font-family:var(--font-body);
+  font-size:.75rem;
+  cursor:pointer;
+  transition:all .2s;
+}
+.btn-logout:hover{border-color:var(--red);color:var(--red)}
+
+/* MAIN AREA */
+.main-area{display:flex;flex:1;overflow:hidden}
+
+/* SIDEBAR */
+.sidebar{
+  width:var(--sidebar-w);
+  flex-shrink:0;
+  background:var(--bg-surface);
+  border-right:1px solid var(--border);
+  overflow-y:auto;
+  padding:.8rem 0;
+}
+.sidebar::-webkit-scrollbar{width:4px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+.nav-section-label{
+  font-size:.62rem;
+  font-weight:700;
+  letter-spacing:.16em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  padding:.6rem 1.2rem .3rem;
+}
+.nav-item{
+  display:flex;align-items:center;gap:.65rem;
+  padding:.55rem 1.2rem;
+  cursor:pointer;
+  border-radius:0;
+  transition:background .15s;
+  margin:1px 0;
+  position:relative;
+}
+.nav-item:hover{background:var(--bg-hover)}
+.nav-item.active{background:var(--gold-glow);border-right:3px solid var(--gold)}
+.nav-item.active .nav-icon{color:var(--gold)}
+.nav-item.active .nav-label{color:var(--text-primary)}
+.nav-icon{font-size:1rem;width:18px;text-align:center;flex-shrink:0;color:var(--text-secondary)}
+.nav-label{font-size:.82rem;color:var(--text-secondary)}
+.nav-item.active .nav-label{color:var(--text-primary);font-weight:600}
+.nav-count{
+  margin-left:auto;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:100px;
+  font-size:.62rem;
+  color:var(--text-muted);
+  padding:.1rem .45rem;
+}
+
+/* CONTENT AREA */
+.content{
+  flex:1;
+  overflow-y:auto;
+  padding:2rem;
+  background:var(--bg-base);
+}
+.content::-webkit-scrollbar{width:5px}
+.content::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px}
+
+/* PAGE */
+.page{display:none}
+.page.active{display:block;animation:fadeIn .25s ease}
+
+/* PAGE HEADER */
+.page-header{
+  display:flex;align-items:flex-start;justify-content:space-between;
+  margin-bottom:1.8rem;
+  gap:1rem;
+  flex-wrap:wrap;
+}
+.page-header-left h2{
+  font-family:var(--font-title);
+  font-size:1.2rem;
+  color:var(--text-primary);
+}
+.page-header-left p{font-size:.8rem;color:var(--text-secondary);margin-top:.2rem}
+
+/* BUTTONS */
+.btn{
+  display:inline-flex;align-items:center;gap:.4rem;
+  border-radius:var(--radius-sm);
+  padding:.5rem 1rem;
+  font-family:var(--font-body);
+  font-size:.8rem;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+  border:1px solid transparent;
+  text-decoration:none;
+}
+.btn-primary{background:var(--gold);color:#1A0F00;border-color:var(--gold)}
+.btn-primary:hover{background:#e0b800}
+.btn-secondary{background:var(--bg-card);color:var(--text-primary);border-color:var(--border)}
+.btn-secondary:hover{border-color:var(--gold);color:var(--gold)}
+.btn-danger{background:rgba(192,57,43,.12);color:#e74c3c;border-color:var(--red-dim)}
+.btn-danger:hover{background:rgba(192,57,43,.25)}
+.btn-sm{padding:.35rem .7rem;font-size:.74rem}
+
+/* CARDS */
+.card{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.4rem;
+  margin-bottom:1.2rem;
+}
+.card-title{
+  font-family:var(--font-title);
+  font-size:.82rem;
+  color:var(--gold);
+  letter-spacing:.06em;
+  margin-bottom:1.2rem;
+  display:flex;align-items:center;gap:.5rem;
+}
+.card-title span{font-size:1rem}
+
+/* FORMS */
+.form-row{display:grid;gap:1rem;margin-bottom:1rem}
+.form-row.cols-2{grid-template-columns:1fr 1fr}
+.form-row.cols-3{grid-template-columns:1fr 1fr 1fr}
+@media(max-width:800px){.form-row.cols-2,.form-row.cols-3{grid-template-columns:1fr}}
+
+.field label{
+  display:block;
+  font-size:.7rem;font-weight:600;
+  letter-spacing:.1em;text-transform:uppercase;
+  color:var(--text-secondary);
+  margin-bottom:.35rem;
+}
+.field input,.field textarea,.field select{
+  width:100%;
+  background:var(--bg-input);
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  padding:.6rem .85rem;
+  color:var(--text-primary);
+  font-family:var(--font-body);
+  font-size:.85rem;
+  outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.field input:focus,.field textarea:focus,.field select:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px var(--gold-glow);
+}
+.field textarea{resize:vertical;min-height:80px;line-height:1.5}
+.field select{cursor:pointer}
+.field select option{background:var(--bg-card)}
+.field input::placeholder,.field textarea::placeholder{color:var(--text-muted)}
+
+/* STATS ROW */
+.stats-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:1rem;
+  margin-bottom:2rem;
+}
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr)}}
+.stat-box{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.2rem;
+  position:relative;
+  overflow:hidden;
+}
+.stat-box::before{
+  content:'';
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--gold);
+}
+.stat-box .stat-val{
+  font-family:var(--font-title);
+  font-size:1.8rem;
+  color:var(--gold);
+  display:block;
+}
+.stat-box .stat-lbl{
+  font-size:.72rem;
+  color:var(--text-secondary);
+  margin-top:.2rem;
+  text-transform:uppercase;
+  letter-spacing:.08em;
+}
+.stat-box .stat-icon{
+  position:absolute;right:1rem;top:1rem;
+  font-size:1.8rem;opacity:.12;
+}
+
+/* TABLES */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead th{
+  text-align:left;
+  font-size:.68rem;
+  font-weight:700;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--text-muted);
+  padding:.6rem 1rem;
+  border-bottom:1px solid var(--border);
+}
+tbody tr{border-bottom:1px solid rgba(255,255,255,.04);transition:background .15s}
+tbody tr:hover{background:var(--bg-hover)}
+tbody td{padding:.7rem 1rem;font-size:.82rem;color:var(--text-secondary)}
+tbody td.primary{color:var(--text-primary);font-weight:500}
+.badge{
+  display:inline-flex;align-items:center;
+  border-radius:100px;
+  padding:.2rem .65rem;
+  font-size:.7rem;font-weight:600;
+}
+.badge-green{background:rgba(0,154,0,.12);color:#4CAF50;border:1px solid rgba(0,154,0,.3)}
+.badge-gold{background:var(--gold-glow);color:var(--gold);border:1px solid var(--gold-dim)}
+.badge-gray{background:var(--bg-hover);color:var(--text-secondary);border:1px solid var(--border)}
+
+/* LIST ITEMS (for objectives, actions etc) */
+.list-item{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1rem 1.2rem;
+  margin-bottom:.7rem;
+  display:flex;align-items:flex-start;gap:1rem;
+  transition:border-color .2s;
+}
+.list-item:hover{border-color:var(--gold-dim)}
+.list-item-num{
+  width:32px;height:32px;flex-shrink:0;
+  border-radius:50%;background:var(--gold-glow);
+  border:1px solid var(--gold-dim);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--font-title);font-size:.7rem;color:var(--gold);
+}
+.list-item-body{flex:1}
+.list-item-body strong{display:block;font-size:.88rem;color:var(--text-primary);margin-bottom:.25rem}
+.list-item-body p{font-size:.78rem;color:var(--text-secondary);line-height:1.5}
+.list-item-actions{display:flex;gap:.4rem;align-items:center;flex-shrink:0}
+
+/* DRAG handle */
+.drag-handle{
+  color:var(--text-muted);cursor:grab;font-size:.9rem;
+  padding:.2rem .3rem;
+}
+
+/* PLAN CARDS */
+.plan-preview{
+  background:var(--bg-input);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:1.2rem;
+  position:relative;
+}
+.plan-preview.featured{border-color:var(--gold-dim)}
+.plan-price-preview{
+  font-family:var(--font-title);
+  font-size:2rem;color:var(--gold);
+  display:block;
+}
+.plan-type-badge{
+  position:absolute;top:.7rem;right:.7rem;
+  font-size:.65rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;
+}
+
+/* CONTACT FIELDS PREVIEW */
+.contact-preview-item{
+  display:flex;gap:1rem;align-items:flex-start;
+  padding:.7rem 0;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.contact-preview-item:last-child{border-bottom:none}
+.contact-preview-label{
+  font-size:.68rem;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--text-muted);
+  width:100px;flex-shrink:0;padding-top:.1rem;
+}
+.contact-preview-val{font-size:.82rem;color:var(--text-secondary)}
+
+/* COLOR SWATCH */
+.swatch-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.5rem}
+.swatch{
+  width:32px;height:32px;border-radius:4px;
+  border:2px solid transparent;cursor:pointer;
+  transition:transform .15s,border-color .15s;
+}
+.swatch:hover{transform:scale(1.15)}
+.swatch.selected{border-color:var(--text-primary)}
+
+/* ALERTS */
+.alert{
+  border-radius:var(--radius-sm);
+  padding:.7rem 1rem;
+  font-size:.8rem;
+  margin-bottom:1rem;
+  display:flex;align-items:flex-start;gap:.5rem;
+}
+.alert-info{background:rgba(46,134,171,.1);border:1px solid rgba(46,134,171,.3);color:#5ba8c7}
+
+/* MODAL */
+.modal-overlay{
+  position:fixed;inset:0;
+  background:rgba(0,0,0,.75);
+  z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .2s;
+}
+.modal-overlay.open{opacity:1;pointer-events:all}
+.modal{
+  background:var(--bg-surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:2rem;
+  width:520px;
+  max-width:90vw;
+  max-height:85vh;
+  overflow-y:auto;
+  transform:translateY(16px);
+  transition:transform .25s;
+  box-shadow:var(--shadow);
+}
+.modal-overlay.open .modal{transform:translateY(0)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem}
+.modal-header h3{font-family:var(--font-title);font-size:.95rem;color:var(--gold)}
+.modal-close{
+  background:transparent;border:none;
+  color:var(--text-secondary);font-size:1.2rem;cursor:pointer;
+  padding:.2rem .4rem;border-radius:4px;
+  transition:color .2s,background .2s;
+}
+.modal-close:hover{color:var(--text-primary);background:var(--bg-hover)}
+.modal-footer{
+  display:flex;justify-content:flex-end;gap:.7rem;
+  margin-top:1.5rem;padding-top:1rem;
+  border-top:1px solid var(--border);
+}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:1.5rem 0}
+
+/* TOGGLE */
+.toggle-wrap{display:flex;align-items:center;gap:.7rem}
+.toggle{position:relative;width:40px;height:22px;cursor:pointer}
+.toggle input{opacity:0;width:0;height:0}
+.slider{
+  position:absolute;inset:0;
+  background:var(--bg-hover);
+  border:1px solid var(--border);
+  border-radius:100px;
+  transition:background .2s;
+}
+.slider::before{
+  content:'';
+  position:absolute;
+  width:16px;height:16px;
+  border-radius:50%;
+  background:var(--text-muted);
+  top:2px;left:2px;
+  transition:transform .2s,background .2s;
+}
+.toggle input:checked + .slider{background:var(--gold-glow);border-color:var(--gold)}
+.toggle input:checked + .slider::before{transform:translateX(18px);background:var(--gold)}
+.toggle-label{font-size:.8rem;color:var(--text-secondary)}
+
+/* ANIMATIONS */
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+
+/* PREVIEW LINK */
+.preview-bar{
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:.8rem 1.2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:1.5rem;
+}
+.preview-bar p{font-size:.78rem;color:var(--text-secondary)}
+.preview-bar a{color:var(--gold);font-size:.78rem;font-weight:600;text-decoration:none}
+.preview-bar a:hover{text-decoration:underline}
+
+/* SEPARATOR LINE */
+.section-sep{
+  display:flex;align-items:center;gap:.8rem;
+  margin:1.5rem 0 1rem;
+}
+.section-sep span{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
+.section-sep::before,.section-sep::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* BREADCRUMB */
+.breadcrumb{
+  display:flex;align-items:center;gap:.4rem;
+  font-size:.72rem;color:var(--text-muted);
+  margin-bottom:.5rem;
+}
+.breadcrumb span{color:var(--text-secondary)}
+.breadcrumb .sep{color:var(--text-muted)}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN
+══════════════════════════════════════════ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-brand">
+      <div class="logo-ring"><span>LPG</span></div>
+      <h1>LES PENSEURS DU GABON</h1>
+      <p>Interface d'administration</p>
+    </div>
+    <div class="login-error" id="login-error">
+      ⚠️ Identifiants incorrects. Veuillez réessayer.
+    </div>
+    <div class="form-group">
+      <label>Identifiant</label>
+      <input type="text" id="login-user" placeholder="admin" autocomplete="username"/>
+    </div>
+    <div class="form-group">
+      <label>Mot de passe</label>
+      <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <button class="btn-login" id="btn-login" onclick="doLogin()">SE CONNECTER</button>
+    <p class="login-hint">Demo : <strong>admin</strong> / <strong>lpg2024</strong></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP
+══════════════════════════════════════════ -->
+<div id="app">
+
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div class="topbar-brand">
+      <div class="brand-icon"><span>LPG</span></div>
+      <div>
+        <h2>L.P.G Admin</h2>
+        <p>Backoffice v1.0</p>
+      </div>
+    </div>
+    <div class="topbar-center">
+      <p class="topbar-title" id="topbar-title">Tableau de bord</p>
+    </div>
+    <div class="topbar-right">
+      <div class="saved-badge" id="saved-badge">✓ Modifications sauvegardées</div>
+      <div class="user-chip" id="user-chip">
+        <div class="avatar" id="avatar-initials">A</div>
+        <span id="user-name-chip">Admin</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">Déconnexion</button>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main-area">
+
+    <!-- SIDEBAR -->
+    <nav class="sidebar">
+      <div class="nav-section-label">Principal</div>
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <span class="nav-icon">⬛</span>
+        <span class="nav-label">Tableau de bord</span>
+      </div>
+
+      <div class="nav-section-label" style="margin-top:.5rem">Contenu du site</div>
+      <div class="nav-item" onclick="showPage('config',this)">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-label">Configuration générale</span>
+      </div>
+      <div class="nav-item" onclick="showPage('mission',this)">
+        <span class="nav-icon">📋</span>
+        <span class="nav-label">Mission & Vision</span>
+      </div>
+      <div class="nav-item" onclick="showPage('values',this)">
+        <span class="nav-icon">💎</span>
+        <span class="nav-label">Valeurs</span>
+        <span class="nav-count">4</span>
+      </div>
+      <div class="nav-item" onclick="showPage('objectives',this)">
+        <span class="nav-icon">🎯</span>
+        <span class="nav-label">Objectifs</span>
+        <span class="nav-count">4</span>
+      </div>
+      <div class="nav-item" onclick="showPage('actions',this)">
+        <span class="nav-icon">⚡</span>
+        <span class="nav-label">Actions principales</span>
+        <span class="nav-count">6</span>
+      </div>
+      <div class="nav-item" onclick="showPage('organisation',this)">
+        <span class="nav-icon">🏛️</span>
+        <span class="nav-label">Organisation</span>
+      </div>
+      <div class="nav-item" onclick="showPage('membership',this)">
+        <span class="nav-icon">💳</span>
+        <span class="nav-label">Adhésion & Tarifs</span>
+      </div>
+      <div class="nav-item" onclick="showPage('contact',this)">
+        <span class="nav-icon">📞</span>
+        <span class="nav-label">Contact & Réseaux</span>
+      </div>
+
+      <div class="nav-section-label" style="margin-top:.5rem">Système</div>
+      <div class="nav-item" onclick="showPage('users',this)">
+        <span class="nav-icon">👤</span>
+        <span class="nav-label">Utilisateurs</span>
+      </div>
+      <div class="nav-item" onclick="showPage('api',this)">
+        <span class="nav-icon">🔌</span>
+        <span class="nav-label">API & Intégration</span>
+      </div>
+    </nav>
+
+    <!-- CONTENT -->
+    <div class="content">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="page active" id="page-dashboard">
+        <div class="breadcrumb"><span>Accueil</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Tableau de bord</h2>
+            <p>Vue d'ensemble du site Les Penseurs du Gabon</p>
+          </div>
+          <a href="lpg-site.html" target="_blank" class="btn btn-secondary">
+            🌐 Voir le site
+          </a>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-box">
+            <span class="stat-icon">🎯</span>
+            <span class="stat-val">4</span>
+            <span class="stat-lbl">Objectifs fondamentaux</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-icon">⚡</span>
+            <span class="stat-val">6</span>
+            <span class="stat-lbl">Actions principales</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-icon">👥</span>
+            <span class="stat-val">10</span>
+            <span class="stat-lbl">Membres bureau</span>
+          </div>
+          <div class="stat-box">
+            <span class="stat-icon">💳</span>
+            <span class="stat-val">2</span>
+            <span class="stat-lbl">Plans d'adhésion</span>
+          </div>
+        </div>
+
+        <div class="alert alert-info">
+          ℹ️ Mode démonstration — les modifications sont simulées en mémoire. Connectez l'API Django pour persister les données.
+        </div>
+
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:1.2rem">
+          <div class="card">
+            <div class="card-title"><span>📋</span> Sections du site</div>
+            <table>
+              <thead><tr><th>Section</th><th>Statut</th><th>Dernière modif.</th></tr></thead>
+              <tbody>
+                <tr><td class="primary">Configuration générale</td><td><span class="badge badge-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="primary">Mission & Vision</td><td><span class="badge badge-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="primary">Valeurs (×4)</td><td><span class="badge badge-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="primary">Objectifs (×4)</td><td><span class="badge badge-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="primary">Actions (×6)</td><td><span class="badge badge-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="primary">Organisation</td><td><span class="badge badge-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="primary">Adhésion & Tarifs</td><td><span class="badge badge-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+                <tr><td class="primary">Contact</td><td><span class="badge badge-green">✓ Publié</span></td><td>Aujourd'hui</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="card">
+            <div class="card-title"><span>🔌</span> Statut API Django</div>
+            <div style="margin-bottom:1rem">
+              <div style="display:flex;justify-content:space-between;margin-bottom:.5rem">
+                <span style="font-size:.8rem;color:var(--text-secondary)">Endpoint principal</span>
+                <span class="badge badge-gold">Mode mock</span>
+              </div>
+              <div style="font-family:monospace;font-size:.75rem;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.6rem .9rem;color:#5ba8c7">/api/all/</div>
+            </div>
+            <div style="margin-bottom:.7rem">
+              <div style="display:flex;justify-content:space-between;margin-bottom:.4rem">
+                <span style="font-size:.78rem;color:var(--text-secondary)">GET /api/config/</span>
+                <span class="badge badge-gray">mock</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:.4rem">
+                <span style="font-size:.78rem;color:var(--text-secondary)">GET /api/objectives/</span>
+                <span class="badge badge-gray">mock</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;margin-bottom:.4rem">
+                <span style="font-size:.78rem;color:var(--text-secondary)">GET /api/actions/</span>
+                <span class="badge badge-gray">mock</span>
+              </div>
+              <div style="display:flex;justify-content:space-between">
+                <span style="font-size:.78rem;color:var(--text-secondary)">GET /api/contact/</span>
+                <span class="badge badge-gray">mock</span>
+              </div>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="showPage('api',document.querySelector('[onclick*=api]'))">Configurer l'API →</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CONFIG GÉNÉRALE ── -->
+      <div class="page" id="page-config">
+        <div class="breadcrumb"><span>Configuration</span><span class="sep">›</span><span>Générale</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Configuration générale</h2>
+            <p>Informations de base de l'association affichées sur le site</p>
+          </div>
+          <button class="btn btn-primary" onclick="saveSection('config')">💾 Sauvegarder</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>🏷️</span> Identité de l'association</div>
+          <div class="form-row cols-2">
+            <div class="field">
+              <label>Nom complet</label>
+              <input type="text" id="cfg-name" value="Les Penseurs du Gabon"/>
+            </div>
+            <div class="field">
+              <label>Acronyme</label>
+              <input type="text" id="cfg-acronym" value="L.P.G"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Slogan / Tagline</label>
+              <input type="text" id="cfg-tagline" value="Pour un Gabon Meilleur"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Description courte (hero)</label>
+              <textarea id="cfg-description">Association citoyenne de réflexion, d'action et d'amélioration du développement du Gabon</textarea>
+            </div>
+          </div>
+          <div class="form-row cols-3">
+            <div class="field">
+              <label>Année de fondation</label>
+              <input type="number" id="cfg-year" value="2024"/>
+            </div>
+            <div class="field">
+              <label>Ville</label>
+              <input type="text" id="cfg-city" value="Libreville"/>
+            </div>
+            <div class="field">
+              <label>Pays</label>
+              <input type="text" id="cfg-country" value="Gabon"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>📊</span> Statistiques (hero)</div>
+          <div class="form-row cols-3">
+            <div class="field">
+              <label>Membres bureau</label>
+              <input type="number" id="cfg-bureau" value="10"/>
+            </div>
+            <div class="field">
+              <label>Nombre d'objectifs</label>
+              <input type="number" id="cfg-obj-count" value="4"/>
+            </div>
+            <div class="field">
+              <label>Label durée</label>
+              <input type="text" id="cfg-duration" value="∞"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>✍️</span> Devise & CTA</div>
+          <div class="form-row cols-2">
+            <div class="field">
+              <label>Devise (citation)</label>
+              <input type="text" id="cfg-motto" value="« Pour un Gabon Meilleur »"/>
+            </div>
+            <div class="field">
+              <label>Label sous la devise</label>
+              <input type="text" id="cfg-motto-label" value="LA DEVISE DE L.P.G"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Texte du bouton CTA</label>
+              <input type="text" id="cfg-cta" value="ENSEMBLE, BÂTISSONS L'AVENIR 🇬🇦🌍"/>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>🖼️</span> Logo</div>
+          <div class="form-row">
+            <div class="field">
+              <label>URL du logo (laisser vide pour placeholder)</label>
+              <input type="url" id="cfg-logo" placeholder="https://votre-domaine.com/logo.png"/>
+            </div>
+          </div>
+          <p style="font-size:.75rem;color:var(--text-muted)">Format recommandé : PNG transparent 400×400px minimum</p>
+        </div>
+      </div>
+
+      <!-- ── MISSION ── -->
+      <div class="page" id="page-mission">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Mission & Vision</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Mission & Vision</h2>
+            <p>Section "Notre Identité" — fond crème avec texte et grille valeurs</p>
+          </div>
+          <button class="btn btn-primary" onclick="saveSection('mission')">💾 Sauvegarder</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>📝</span> Texte principal (colonne gauche)</div>
+          <div class="form-row">
+            <div class="field">
+              <label>Titre de la section</label>
+              <input type="text" id="mission-title" value="Les Penseurs du Gabon"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Paragraphe 1</label>
+              <textarea id="mission-p1">est une association pour la réflexion, l'action et l'amélioration du développement social, économique et politique du Gabon.</textarea>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Paragraphe 2</label>
+              <textarea id="mission-p2">Rassemblant citoyens, intellectuels, artisans et professionnels autour d'un objectif commun : contribuer activement au changement positif du pays.</textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VALEURS ── -->
+      <div class="page" id="page-values">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Valeurs</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Valeurs</h2>
+            <p>Grille 2×2 dans la section Mission & Vision</p>
+          </div>
+          <button class="btn btn-primary" onclick="addValue()">+ Ajouter une valeur</button>
+        </div>
+        <div id="values-list">
+          <!-- rendered by JS -->
+        </div>
+      </div>
+
+      <!-- ── OBJECTIFS ── -->
+      <div class="page" id="page-objectives">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Objectifs</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Objectifs fondamentaux</h2>
+            <p>Section "Ce que nous faisons" — grille 2×2 brun foncé</p>
+          </div>
+          <button class="btn btn-primary" onclick="addObjective()">+ Ajouter un objectif</button>
+        </div>
+        <div id="objectives-list"></div>
+      </div>
+
+      <!-- ── ACTIONS ── -->
+      <div class="page" id="page-actions">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Actions</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Actions principales</h2>
+            <p>Section "Sur le terrain" — grille 3×2 fond crème</p>
+          </div>
+          <button class="btn btn-primary" onclick="addAction()">+ Ajouter une action</button>
+        </div>
+        <div id="actions-list"></div>
+      </div>
+
+      <!-- ── ORGANISATION ── -->
+      <div class="page" id="page-organisation">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Organisation</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Organisation & Gouvernance</h2>
+            <p>Rôles du bureau et types de membres</p>
+          </div>
+          <button class="btn btn-primary" onclick="saveSection('organisation')">💾 Sauvegarder</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>🏛️</span> Conseil d'Administration</div>
+          <div class="alert alert-info">ℹ️ Chaque ligne correspond à un rôle affiché dans la grille du bureau.</div>
+          <div id="board-roles-list"></div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:.8rem" onclick="addBoardRole()">+ Ajouter un rôle</button>
+        </div>
+
+        <div class="card">
+          <div class="card-title"><span>👥</span> Types de membres</div>
+          <div id="member-types-list"></div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:.8rem" onclick="addMemberType()">+ Ajouter un type</button>
+        </div>
+      </div>
+
+      <!-- ── MEMBERSHIP ── -->
+      <div class="page" id="page-membership">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Adhésion</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Adhésion & Cotisations</h2>
+            <p>Plans tarifaires affichés dans la section "Nous rejoindre"</p>
+          </div>
+          <button class="btn btn-primary" onclick="saveSection('membership')">💾 Sauvegarder</button>
+        </div>
+        <div id="plans-editor"></div>
+      </div>
+
+      <!-- ── CONTACT ── -->
+      <div class="page" id="page-contact">
+        <div class="breadcrumb"><span>Contenu</span><span class="sep">›</span><span>Contact</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Contact & Réseaux sociaux</h2>
+            <p>Coordonnées affichées en bas de page</p>
+          </div>
+          <button class="btn btn-primary" onclick="saveSection('contact')">💾 Sauvegarder</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>📍</span> Coordonnées</div>
+          <div class="form-row cols-2">
+            <div class="field">
+              <label>Adresse / Siège social</label>
+              <input type="text" id="contact-address" value="Libreville, Gabon"/>
+            </div>
+            <div class="field">
+              <label>Email principal</label>
+              <input type="email" id="contact-email" value="lespenseursdugabon@gmail.com"/>
+            </div>
+          </div>
+          <div class="form-row cols-2">
+            <div class="field">
+              <label>Téléphone 1</label>
+              <input type="text" id="contact-phone1" value="+(241) 066 431 225"/>
+            </div>
+            <div class="field">
+              <label>Téléphone 2</label>
+              <input type="text" id="contact-phone2" value="+(241) 077 217 917"/>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Statut juridique</label>
+              <input type="text" id="contact-status" value="Association à durée illimitée"/>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>📢</span> Messages "Rejoignez-nous"</div>
+          <div id="join-statements-list"></div>
+          <button class="btn btn-secondary btn-sm" style="margin-top:.8rem" onclick="addJoinStatement()">+ Ajouter un message</button>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>🌐</span> Réseaux sociaux</div>
+          <div class="form-row cols-2">
+            <div class="field">
+              <label>Facebook</label>
+              <input type="url" id="social-fb" placeholder="https://facebook.com/..."/>
+            </div>
+            <div class="field">
+              <label>Instagram</label>
+              <input type="url" id="social-ig" placeholder="https://instagram.com/..."/>
+            </div>
+          </div>
+          <div class="form-row cols-2">
+            <div class="field">
+              <label>Twitter / X</label>
+              <input type="url" id="social-tw" placeholder="https://x.com/..."/>
+            </div>
+            <div class="field">
+              <label>WhatsApp</label>
+              <input type="url" id="social-wa" placeholder="https://wa.me/..."/>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── USERS ── -->
+      <div class="page" id="page-users">
+        <div class="breadcrumb"><span>Système</span><span class="sep">›</span><span>Utilisateurs</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>Gestion des utilisateurs</h2>
+            <p>Comptes ayant accès au backoffice</p>
+          </div>
+          <button class="btn btn-primary" onclick="openUserModal()">+ Nouvel utilisateur</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Utilisateur</th><th>Email</th><th>Rôle</th><th>Dernier accès</th><th>Statut</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="users-table">
+                <tr>
+                  <td><div style="display:flex;align-items:center;gap:.6rem"><div class="avatar" style="width:28px;height:28px;font-size:.62rem">AD</div><span class="primary">Administrateur</span></div></td>
+                  <td>admin@lpg.ga</td>
+                  <td><span class="badge badge-gold">Super Admin</span></td>
+                  <td>Aujourd'hui</td>
+                  <td><span class="badge badge-green">Actif</span></td>
+                  <td><button class="btn btn-secondary btn-sm">Modifier</button></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>🔑</span> Changer le mot de passe</div>
+          <div class="form-row cols-3">
+            <div class="field">
+              <label>Mot de passe actuel</label>
+              <input type="password" id="pw-current" placeholder="••••••••"/>
+            </div>
+            <div class="field">
+              <label>Nouveau mot de passe</label>
+              <input type="password" id="pw-new" placeholder="••••••••"/>
+            </div>
+            <div class="field">
+              <label>Confirmer</label>
+              <input type="password" id="pw-confirm" placeholder="••••••••"/>
+            </div>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="changePassword()">Mettre à jour</button>
+        </div>
+      </div>
+
+      <!-- ── API ── -->
+      <div class="page" id="page-api">
+        <div class="breadcrumb"><span>Système</span><span class="sep">›</span><span>API</span></div>
+        <div class="page-header">
+          <div class="page-header-left">
+            <h2>API & Intégration Django</h2>
+            <p>Configuration de la connexion au backend</p>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>🔌</span> URL de l'API Django</div>
+          <div class="form-row cols-2">
+            <div class="field">
+              <label>Base URL (ex: http://localhost:8000)</label>
+              <input type="url" id="api-base-url" placeholder="http://localhost:8000"/>
+            </div>
+            <div class="field">
+              <label>Token JWT (si activé)</label>
+              <input type="text" id="api-token" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6..."/>
+            </div>
+          </div>
+          <div style="display:flex;gap:.7rem;flex-wrap:wrap;margin-top:.5rem">
+            <button class="btn btn-secondary btn-sm" onclick="testApi()">🔍 Tester la connexion</button>
+            <button class="btn btn-primary btn-sm" onclick="saveApiConfig()">💾 Sauvegarder</button>
+          </div>
+          <div id="api-test-result" style="margin-top:.8rem;font-size:.78rem;display:none"></div>
+        </div>
+        <div class="card">
+          <div class="card-title"><span>📖</span> Référence des endpoints</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr></thead>
+              <tbody>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/all/</td><td>Tout le contenu en un appel ✅</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/config/</td><td>Configuration générale</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/about/</td><td>Mission & Vision</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/values/</td><td>Valeurs (grille)</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/objectives/</td><td>Objectifs fondamentaux</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/actions/</td><td>Actions principales</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/board-roles/</td><td>Rôles bureau</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/member-types/</td><td>Types de membres</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/membership-plans/</td><td>Plans & tarifs</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/contact/</td><td>Coordonnées</td></tr>
+                <tr><td><span class="badge badge-green">GET</span></td><td style="font-family:monospace;font-size:.78rem;color:#5ba8c7">/api/join-statements/</td><td>Messages rejoindre</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main-area -->
+</div><!-- /app -->
+
+<!-- ══════════════════════════════════════════
+     MODAL (Add/Edit items)
+══════════════════════════════════════════ -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModalOutside(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <h3 id="modal-title">Modifier</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal()">Annuler</button>
+      <button class="btn btn-primary" id="modal-save-btn" onclick="saveModal()">Sauvegarder</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT
+══════════════════════════════════════════ -->
+<script>
+/* ─── STATE ─────────────────────────────────────────────────── */
+const STATE = {
+  user: null,
+  values: [
+    {id:1,title:"Éducation & Savoir",description:"L'éducation transforme la société gabonaise",icon:"📚"},
+    {id:2,title:"Solidarité",description:"Le collectif et l'entraide au cœur de nos actions",icon:"🤝"},
+    {id:3,title:"Innovation",description:"Solutions adaptées aux réalités locales",icon:"💡"},
+    {id:4,title:"Engagement citoyen",description:"Chacun a un rôle pour améliorer le pays",icon:"🌍"},
+  ],
+  objectives: [
+    {id:1,number:1,title:"Encourager l'innovation",description:"Dans la gouvernance, l'éducation, la santé et le développement durable au Gabon.",icon:"💡"},
+    {id:2,number:2,title:"Promouvoir l'unité nationale",description:"Participation citoyenne à travers des projets communautaires visant à renforcer les liens sociaux.",icon:"🇬🇦"},
+    {id:3,number:3,title:"Former & Informer",description:"Rendre la jeunesse gabonaise acteur central du changement dans le pays.",icon:"🎓"},
+    {id:4,number:4,title:"Projets économiques",description:"Encourager la croissance locale, la création d'emplois et l'industrialisation du Gabon.",icon:"📈"},
+  ],
+  actions: [
+    {id:1,title:"Forums & Débats",description:"Organisation de forums de discussions et débats pour réfléchir aux solutions aux problèmes actuels du Gabon.",icon:"🗣️"},
+    {id:2,title:"Développement local",description:"Projets d'agriculture durable, programmes de formation technique pour les jeunes et constructions d'infrastructures.",icon:"🏗️"},
+    {id:3,title:"Collaboration ONG",description:"Partenariats avec des ONG locales et internationales pour renforcer l'impact de nos projets.",icon:"🌐"},
+    {id:4,title:"Patrimoine culturel",description:"Promotion du patrimoine gabonais à travers des événements culturels, artistiques et éducatifs.",icon:"🎭"},
+    {id:5,title:"Entrepreneuriat",description:"Accompagnement des porteurs de projets et soutien à l'entrepreneuriat gabonais.",icon:"🚀"},
+    {id:6,title:"Gouvernance & Droit",description:"Sensibilisation citoyenne et promotion de la bonne gouvernance au Gabon.",icon:"⚖️"},
+  ],
+  boardRoles: [
+    {id:1,title:"Président"},{id:2,title:"Vice-Président"},{id:3,title:"Secrétaire Général"},
+    {id:4,title:"Trésorier"},{id:5,title:"Trésorier Adjoint"},{id:6,title:"Communication"},
+    {id:7,title:"Logistique"},{id:8,title:"Relations Extérieures"},{id:9,title:"Juridique"},{id:10,title:"Projets"},
+  ],
+  memberTypes: [
+    {id:1,title:"Membres Fondateurs",description:"Ceux qui ont initié la création",icon:"⭐"},
+    {id:2,title:"Membres Actifs",description:"Adhérents qui s'acquittent de leur cotisation mensuelle",icon:"✅"},
+    {id:3,title:"Membres Bienfaiteurs",description:"Soutien financier ou matériel significatif",icon:"💎"},
+    {id:4,title:"Membres d'Honneur",description:"Personnalités reconnues pour leur engagement",icon:"🏆"},
+  ],
+  plans: [
+    {id:1,plan_type:"simple",price:2000,currency:"FCFA",period:"mois",title:"MEMBRE SIMPLE",subtitle:"Tout citoyen gabonais souhaitant s'impliquer activement dans le progrès du Gabon.",benefits:["Accès aux forums et débats","Participation aux projets","Réseau citoyen engagé"],is_featured:false},
+    {id:2,plan_type:"ca",price:10000,currency:"FCFA",period:"mois",title:"MEMBRE DU C.A.",subtitle:"Membres du Conseil d'Administration. Engagement renforcé au cœur de la gouvernance associative.",benefits:["Tous droits membre simple","Vote & décisions stratégiques","Responsabilités officielles"],is_featured:true},
+  ],
+  joinStatements: [
+    {id:1,text:"Pensez grand, agissez maintenant"},
+    {id:2,text:"Bâtissons ensemble un Gabon meilleur"},
+    {id:3,text:"Rejoignez citoyens, jeunes, entrepreneurs"},
+    {id:4,text:"Soyez acteur du changement, dès aujourd'hui"},
+  ],
+  modal: {type:null,editId:null},
+};
+
+/* ─── AUTH ──────────────────────────────────────────────────── */
+const USERS = [{username:"admin",password:"lpg2024",role:"Super Admin",email:"admin@lpg.ga"}];
+
+document.getElementById("login-pass").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
+document.getElementById("login-user").addEventListener("keydown",e=>{if(e.key==="Enter")doLogin()});
+
+function doLogin(){
+  const u=document.getElementById("login-user").value.trim();
+  const p=document.getElementById("login-pass").value;
+  const found=USERS.find(x=>x.username===u && x.password===p);
+  if(!found){
+    document.getElementById("login-error").classList.add("show");
+    document.getElementById("login-pass").value="";
+    return;
+  }
+  STATE.user=found;
+  // Fake JWT token stored
+  sessionStorage.setItem("lpg_token","eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.mock");
+  sessionStorage.setItem("lpg_user",JSON.stringify(found));
+  document.getElementById("login-screen").classList.add("out");
+  document.getElementById("app").classList.add("visible");
+  document.getElementById("user-name-chip").textContent = found.username;
+  document.getElementById("avatar-initials").textContent = found.username.substring(0,2).toUpperCase();
+  renderAll();
+}
+
+function doLogout(){
+  sessionStorage.clear();
+  document.getElementById("login-screen").classList.remove("out");
+  document.getElementById("app").classList.remove("visible");
+  document.getElementById("login-user").value="";
+  document.getElementById("login-pass").value="";
+  document.getElementById("login-error").classList.remove("show");
+}
+
+// Auto-login if session exists
+(function(){
+  const t=sessionStorage.getItem("lpg_token");
+  const u=sessionStorage.getItem("lpg_user");
+  if(t && u){
+    STATE.user=JSON.parse(u);
+    document.getElementById("login-screen").classList.add("out");
+    document.getElementById("app").classList.add("visible");
+    document.getElementById("user-name-chip").textContent=STATE.user.username;
+    document.getElementById("avatar-initials").textContent=STATE.user.username.substring(0,2).toUpperCase();
+    renderAll();
+  }
+})();
+
+/* ─── NAVIGATION ────────────────────────────────────────────── */
+function showPage(name, el){
+  document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+  document.querySelectorAll(".nav-item").forEach(n=>n.classList.remove("active"));
+  document.getElementById("page-"+name).classList.add("active");
+  if(el) el.classList.add("active");
+  const labels={
+    dashboard:"Tableau de bord",config:"Configuration générale",mission:"Mission & Vision",
+    values:"Valeurs",objectives:"Objectifs fondamentaux",actions:"Actions principales",
+    organisation:"Organisation & Gouvernance",membership:"Adhésion & Cotisations",
+    contact:"Contact & Réseaux",users:"Utilisateurs",api:"API & Intégration",
+  };
+  document.getElementById("topbar-title").innerHTML = `<span>${labels[name]||name}</span>`;
+}
+
+/* ─── SAVE FEEDBACK ─────────────────────────────────────────── */
+function saveSection(name){
+  const badge=document.getElementById("saved-badge");
+  badge.classList.add("show");
+  setTimeout(()=>badge.classList.remove("show"),2800);
+  console.log(`[LPG Admin] Section "${name}" saved to API →`,{timestamp:new Date().toISOString()});
+}
+
+/* ─── RENDER ALL ────────────────────────────────────────────── */
+function renderAll(){
+  renderValues();
+  renderObjectives();
+  renderActions();
+  renderBoardRoles();
+  renderMemberTypes();
+  renderPlans();
+  renderJoinStatements();
+}
+
+/* ─── VALUES ─────────────────────────────────────────────────── */
+function renderValues(){
+  const c=document.getElementById("values-list");
+  c.innerHTML=STATE.values.map(v=>`
+    <div class="list-item">
+      <div class="list-item-num">${v.icon}</div>
+      <div class="list-item-body">
+        <strong>${v.title}</strong>
+        <p>${v.description}</p>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editValue(${v.id})">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('values',${v.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function addValue(){ openModal("value",null) }
+function editValue(id){ openModal("value",id) }
+
+/* ─── OBJECTIVES ─────────────────────────────────────────────── */
+function renderObjectives(){
+  const c=document.getElementById("objectives-list");
+  c.innerHTML=STATE.objectives.map(o=>`
+    <div class="list-item">
+      <div class="list-item-num">${String(o.number).padStart(2,"0")}</div>
+      <div class="list-item-body">
+        <strong>${o.icon} ${o.title}</strong>
+        <p>${o.description}</p>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editObjective(${o.id})">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('objectives',${o.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function addObjective(){ openModal("objective",null) }
+function editObjective(id){ openModal("objective",id) }
+
+/* ─── ACTIONS ────────────────────────────────────────────────── */
+function renderActions(){
+  const c=document.getElementById("actions-list");
+  c.innerHTML=STATE.actions.map(a=>`
+    <div class="list-item">
+      <div class="list-item-num">${a.icon}</div>
+      <div class="list-item-body">
+        <strong>${a.title}</strong>
+        <p>${a.description}</p>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editAction(${a.id})">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('actions',${a.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function addAction(){ openModal("action",null) }
+function editAction(id){ openModal("action",id) }
+
+/* ─── BOARD ROLES ─────────────────────────────────────────────── */
+function renderBoardRoles(){
+  const c=document.getElementById("board-roles-list");
+  c.innerHTML=`<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;">`+
+    STATE.boardRoles.map(r=>`
+      <div style="display:flex;align-items:center;gap:.5rem;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius-sm);padding:.5rem .7rem;">
+        <span style="font-size:.8rem;color:var(--text-primary);flex:1">${r.title}</span>
+        <button class="btn btn-danger btn-sm" style="padding:.2rem .4rem" onclick="deleteItem('boardRoles',${r.id})">✕</button>
+      </div>
+    `).join("")+`</div>`;
+}
+
+function addBoardRole(){
+  const name=prompt("Nom du rôle :");
+  if(name&&name.trim()){
+    const id=Math.max(...STATE.boardRoles.map(r=>r.id),0)+1;
+    STATE.boardRoles.push({id,title:name.trim()});
+    renderBoardRoles();
+  }
+}
+
+/* ─── MEMBER TYPES ────────────────────────────────────────────── */
+function renderMemberTypes(){
+  const c=document.getElementById("member-types-list");
+  c.innerHTML=STATE.memberTypes.map(m=>`
+    <div class="list-item">
+      <div class="list-item-num">${m.icon}</div>
+      <div class="list-item-body">
+        <strong>${m.title}</strong>
+        <p>${m.description}</p>
+      </div>
+      <div class="list-item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editMemberType(${m.id})">✏️ Modifier</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('memberTypes',${m.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function addMemberType(){ openModal("memberType",null) }
+function editMemberType(id){ openModal("memberType",id) }
+
+/* ─── PLANS ──────────────────────────────────────────────────── */
+function renderPlans(){
+  const c=document.getElementById("plans-editor");
+  c.innerHTML=STATE.plans.map(p=>`
+    <div class="card" style="${p.is_featured?'border-color:var(--gold-dim)':''}">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem">
+        <div class="card-title" style="margin-bottom:0"><span>${p.is_featured?'⭐':'👤'}</span> ${p.title}</div>
+        <div style="display:flex;gap:.5rem">
+          ${p.is_featured?'<span class="badge badge-gold">Mis en avant</span>':''}
+          <button class="btn btn-secondary btn-sm" onclick="editPlan(${p.id})">✏️ Modifier</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 2fr;gap:1.5rem;align-items:start">
+        <div class="plan-preview ${p.is_featured?'featured':''}">
+          <span class="plan-price-preview">${p.price.toLocaleString('fr-FR')}</span>
+          <div style="font-size:.75rem;color:var(--text-secondary);margin-top:.2rem">${p.currency} / ${p.period}</div>
+          <div style="font-size:.82rem;font-weight:700;color:var(--text-primary);margin-top:.7rem">${p.title}</div>
+        </div>
+        <div>
+          <p style="font-size:.78rem;color:var(--text-secondary);margin-bottom:.8rem">${p.subtitle}</p>
+          <ul style="list-style:none">
+            ${p.benefits.map(b=>`<li style="font-size:.78rem;color:var(--text-secondary);padding:.25rem 0;border-bottom:1px solid rgba(255,255,255,.05)">✓ ${b}</li>`).join("")}
+          </ul>
+        </div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function editPlan(id){ openModal("plan",id) }
+
+/* ─── JOIN STATEMENTS ────────────────────────────────────────── */
+function renderJoinStatements(){
+  const c=document.getElementById("join-statements-list");
+  c.innerHTML=STATE.joinStatements.map(s=>`
+    <div class="list-item" style="padding:.7rem 1rem">
+      <div class="list-item-num" style="font-size:.65rem;font-family:var(--font-title)">→</div>
+      <div class="list-item-body"><strong>${s.text}</strong></div>
+      <div class="list-item-actions">
+        <button class="btn btn-secondary btn-sm" onclick="editJoinStatement(${s.id})">✏️</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteItem('joinStatements',${s.id})">🗑️</button>
+      </div>
+    </div>
+  `).join("");
+}
+
+function addJoinStatement(){ openModal("joinStatement",null) }
+function editJoinStatement(id){ openModal("joinStatement",id) }
+
+/* ─── DELETE ─────────────────────────────────────────────────── */
+function deleteItem(collection, id){
+  if(!confirm("Supprimer cet élément ?")) return;
+  STATE[collection]=STATE[collection].filter(x=>x.id!==id);
+  renderAll();
+  saveSection(collection);
+}
+
+/* ─── MODAL ──────────────────────────────────────────────────── */
+const MODAL_CONFIGS = {
+  value:{
+    title:"Valeur",
+    fields:[
+      {key:"icon",label:"Icône (emoji)",type:"text",placeholder:"📚"},
+      {key:"title",label:"Titre",type:"text",placeholder:"Éducation & Savoir"},
+      {key:"description",label:"Description",type:"textarea",placeholder:"L'éducation transforme…"},
+    ],
+    collection:"values",
+  },
+  objective:{
+    title:"Objectif",
+    fields:[
+      {key:"number",label:"Numéro",type:"number",placeholder:"1"},
+      {key:"icon",label:"Icône (emoji)",type:"text",placeholder:"💡"},
+      {key:"title",label:"Titre",type:"text",placeholder:"Encourager l'innovation"},
+      {key:"description",label:"Description",type:"textarea",placeholder:"…"},
+    ],
+    collection:"objectives",
+  },
+  action:{
+    title:"Action",
+    fields:[
+      {key:"icon",label:"Icône (emoji)",type:"text",placeholder:"🗣️"},
+      {key:"title",label:"Titre",type:"text",placeholder:"Forums & Débats"},
+      {key:"description",label:"Description",type:"textarea",placeholder:"…"},
+    ],
+    collection:"actions",
+  },
+  memberType:{
+    title:"Type de membre",
+    fields:[
+      {key:"icon",label:"Icône (emoji)",type:"text",placeholder:"⭐"},
+      {key:"title",label:"Titre",type:"text",placeholder:"Membres Fondateurs"},
+      {key:"description",label:"Description",type:"textarea",placeholder:"Ceux qui ont initié…"},
+    ],
+    collection:"memberTypes",
+  },
+  joinStatement:{
+    title:"Message",
+    fields:[
+      {key:"text",label:"Texte du message",type:"text",placeholder:"Pensez grand, agissez maintenant"},
+    ],
+    collection:"joinStatements",
+  },
+  plan:{
+    title:"Plan d'adhésion",
+    fields:[
+      {key:"title",label:"Titre du plan",type:"text",placeholder:"MEMBRE SIMPLE"},
+      {key:"price",label:"Tarif (chiffre)",type:"number",placeholder:"2000"},
+      {key:"currency",label:"Devise",type:"text",placeholder:"FCFA"},
+      {key:"period",label:"Période",type:"text",placeholder:"mois"},
+      {key:"subtitle",label:"Sous-titre / description",type:"textarea"},
+      {key:"benefits",label:"Avantages (un par ligne)",type:"textarea",placeholder:"Accès aux forums\nParticipation aux projets"},
+    ],
+    collection:"plans",
+    transform:{
+      benefits: v => typeof v==="string" ? v.split("\n").map(x=>x.trim()).filter(Boolean) : v,
+      benefitsToString: arr => Array.isArray(arr) ? arr.join("\n") : arr,
+    }
+  },
+};
+
+function openModal(type, id){
+  const cfg=MODAL_CONFIGS[type];
+  if(!cfg) return;
+  STATE.modal={type,editId:id};
+
+  const item = id ? STATE[cfg.collection].find(x=>x.id===id) : null;
+  document.getElementById("modal-title").textContent = id ? `Modifier — ${cfg.title}` : `Ajouter — ${cfg.title}`;
+
+  document.getElementById("modal-body").innerHTML = cfg.fields.map(f=>{
+    let val = item ? item[f.key] : "";
+    if(cfg.transform && f.key==="benefits" && cfg.transform.benefitsToString) val=cfg.transform.benefitsToString(val);
+    return `
+      <div class="field" style="margin-bottom:1rem">
+        <label>${f.label}</label>
+        ${f.type==="textarea"
+          ? `<textarea id="mf-${f.key}" placeholder="${f.placeholder||''}">${val||""}</textarea>`
+          : `<input type="${f.type}" id="mf-${f.key}" value="${val||""}" placeholder="${f.placeholder||''}"/>`
+        }
+      </div>
+    `;
+  }).join("");
+
+  document.getElementById("modal-overlay").classList.add("open");
+}
+
+function closeModal(){
+  document.getElementById("modal-overlay").classList.remove("open");
+}
+function closeModalOutside(e){
+  if(e.target===document.getElementById("modal-overlay")) closeModal();
+}
+
+function saveModal(){
+  const {type,editId}=STATE.modal;
+  const cfg=MODAL_CONFIGS[type];
+  if(!cfg) return;
+
+  const data={};
+  cfg.fields.forEach(f=>{
+    let val=document.getElementById("mf-"+f.key).value;
+    if(f.type==="number") val=parseInt(val)||0;
+    if(cfg.transform && cfg.transform[f.key]) val=cfg.transform[f.key](val);
+    data[f.key]=val;
+  });
+
+  if(editId){
+    const idx=STATE[cfg.collection].findIndex(x=>x.id===editId);
+    if(idx!==-1) STATE[cfg.collection][idx]={...STATE[cfg.collection][idx],...data};
+  } else {
+    const newId=Math.max(...STATE[cfg.collection].map(x=>x.id),0)+1;
+    STATE[cfg.collection].push({id:newId,...data});
+  }
+
+  closeModal();
+  renderAll();
+  saveSection(type);
+}
+
+/* ─── USERS ──────────────────────────────────────────────────── */
+function openUserModal(){
+  alert("Interface de création d'utilisateur à connecter au backend Django.\n\nEndpoint : POST /api/auth/users/");
+}
+
+function changePassword(){
+  const cur=document.getElementById("pw-current").value;
+  const nw=document.getElementById("pw-new").value;
+  const conf=document.getElementById("pw-confirm").value;
+  if(!cur||!nw||!conf){alert("Veuillez remplir tous les champs.");return}
+  if(nw!==conf){alert("Les mots de passe ne correspondent pas.");return}
+  const u=USERS.find(x=>x.password===cur);
+  if(!u){alert("Mot de passe actuel incorrect.");return}
+  u.password=nw;
+  alert("✓ Mot de passe modifié avec succès.");
+  ["pw-current","pw-new","pw-confirm"].forEach(id=>document.getElementById(id).value="");
+}
+
+/* ─── API TEST ────────────────────────────────────────────────── */
+async function testApi(){
+  const base=document.getElementById("api-base-url").value.trim();
+  const out=document.getElementById("api-test-result");
+  out.style.display="block";
+  out.innerHTML='<span style="color:var(--text-secondary)">⏳ Test en cours…</span>';
+  if(!base){out.innerHTML='<span style="color:#e74c3c">⚠️ Veuillez saisir une URL.</span>';return}
+  try{
+    const r=await fetch(base+"/api/all/",{signal:AbortSignal.timeout(4000)});
+    if(r.ok){
+      out.innerHTML='<span style="color:#4CAF50">✓ Connexion réussie ! L\'API Django répond correctement.</span>';
+    } else {
+      out.innerHTML=`<span style="color:#e74c3c">✗ Erreur HTTP ${r.status}</span>`;
+    }
+  } catch(e){
+    out.innerHTML=`<span style="color:#e74c3c">✗ Impossible de joindre l'API : ${e.message}</span>`;
+  }
+}
+
+function saveApiConfig(){
+  const base=document.getElementById("api-base-url").value.trim();
+  if(base) localStorage.setItem("lpg_api_base",base);
+  saveSection("api");
+}
+
+// Restore API URL
+const savedApi=localStorage.getItem("lpg_api_base");
+if(savedApi) document.addEventListener("DOMContentLoaded",()=>{
+  const el=document.getElementById("api-base-url");
+  if(el) el.value=savedApi;
+});
+</script>
+</body>
+</html>
