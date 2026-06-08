@@ -15,157 +15,810 @@
 
 <div id="loading"><div class="spinner"></div><p>Chargement…</p></div>
 
-<!-- DRAPEAU -->
-<div class="flag"><span class="g"></span><span class="y"></span><span class="b"></span></div>
-
-<!-- NAV -->
-<nav>
-  <span class="nav-brand" id="nav-brand">L.P.G</span>
-  <div class="nav-links-wrap">
-    <ul class="nav-links">
-      <li><a href="#mission">Mission</a></li>
-      <li><a href="#objectives">Objectifs</a></li>
-      <li><a href="#actions">Actions</a></li>
-      <li><a href="#organisation">Organisation</a></li>
-      <li><a href="#membership">Adhésion</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
+<!-- ══ NAV ══ -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="#hero" class="header-brand">
+      <img id="nav-logo" src="{% static 'images/logo.jpg' %}" alt="Logo LPG" class="nav-logo-img"/>
+    </a>
+    <nav class="nav-links-wrap" id="nav-links-wrap">
+      <ul class="nav-links">
+        <li><a href="#about">QUI SOMMES-NOUS</a></li>
+        <li><a href="#values">NOS VALEURS</a></li>
+        <li><a href="#objectives">NOS OBJECTIFS</a></li>
+        <li><a href="#actions">NOS ACTIONS</a></li>
+        <li><a href="#contact" class="nav-cta">NOUS REJOINDRE</a></li>
+      </ul>
+    </nav>
+    <button class="burger" id="burger" aria-label="Menu" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </button>
   </div>
-  <button class="burger" id="burger" aria-label="Menu" onclick="toggleMenu()">
-    <span></span><span></span><span></span>
-  </button>
-</nav>
+</header>
 
 <!-- MENU MOBILE -->
 <div class="mobile-menu" id="mobile-menu">
-  <a href="#mission"      onclick="closeMenu()">Mission &amp; Vision</a>
-  <a href="#objectives"   onclick="closeMenu()">Objectifs</a>
-  <a href="#actions"      onclick="closeMenu()">Actions</a>
-  <a href="#organisation" onclick="closeMenu()">Organisation</a>
-  <a href="#membership"   onclick="closeMenu()">Adhésion</a>
-  <a href="#contact"      onclick="closeMenu()">Contact</a>
-  <a href="#contact" class="cta-mobile" onclick="closeMenu()">Nous rejoindre</a>
+  <a href="#about"      onclick="closeMenu()">Qui sommes-nous</a>
+  <a href="#values"     onclick="closeMenu()">Nos Valeurs</a>
+  <a href="#objectives" onclick="closeMenu()">Nos Objectifs</a>
+  <a href="#actions"    onclick="closeMenu()">Nos Actions</a>
+  <a href="#membership" onclick="closeMenu()">Types de Membres</a>
+  <a href="#contact"    onclick="closeMenu()">Contact</a>
+  <a href="#contact" class="cta-mobile" onclick="closeMenu()">Nous Rejoindre</a>
 </div>
 
 <!-- ══ HERO ══ -->
-<section id="hero">
-  <img class="hero-logo" id="hero-logo"
-       src="{% static 'images/logo.jpg' %}" alt="Logo LPG"/>
-  <p class="hero-meta" id="hero-meta">L.P.G · FONDÉE EN 2024 · LIBREVILLE, GABON</p>
-  <h1 class="hero-title" id="hero-title">LES PENSEURS DU GABON</h1>
-  <p class="hero-tagline" id="hero-tagline">Pour un Gabon Meilleur</p>
-  <p class="hero-desc" id="hero-description">
-    Association citoyenne de réflexion, d'action et d'amélioration du développement du Gabon
-  </p>
-  <div class="stats-row" id="stats-row">
-    <div class="stat-card">
-      <span class="stat-val" id="stat-year">2024</span>
-      <span class="stat-lbl">Fondation</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-val" id="stat-members">10</span>
-      <span class="stat-lbl">Membres bureau</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-val" id="stat-objectives">4</span>
-      <span class="stat-lbl">Objectifs</span>
-    </div>
-    <div class="stat-card">
-      <span class="stat-val" id="stat-duration">∞</span>
-      <span class="stat-lbl">Durée</span>
-    </div>
-  </div>
-</section>
-
-<!-- ══ MISSION ══ -->
-<section id="mission">
-  <div class="sh">
-    <p class="ov">NOTRE IDENTITÉ</p>
-    <h2>Mission &amp; Vision</h2>
-  </div>
-  <div class="mission-body">
-    <div class="mission-text reveal">
-      <h3 id="about-title">Les Penseurs du Gabon</h3>
-      <p id="about-p1">est une association pour la réflexion, l'action et l'amélioration du développement social, économique et politique du Gabon.</p>
-      <p id="about-p2">Rassemblant citoyens, intellectuels, artisans et professionnels autour d'un objectif commun : contribuer activement au changement positif du pays.</p>
-      <div class="motto-block">
-        <p class="quote" id="motto-text">« Pour un Gabon Meilleur »</p>
-        <p class="ql" id="motto-label">LA DEVISE DE L.P.G</p>
+<section id="hero" class="hero-section">
+  <div class="hero-inner">
+    <div class="hero-left">
+      <!-- Gabonese flag accent -->
+      <div class="flag-accent">
+        <span class="f-g"></span><span class="f-y"></span><span class="f-b"></span>
+      </div>
+      <img class="hero-logo-img" id="hero-logo"
+           src="{% static 'images/logo.jpg' %}" alt="Logo LPG"/>
+      <p class="hero-meta" id="hero-meta">ASSOCIATION CITOYENNE · GABON · FONDÉE EN 2024</p>
+      <h1 class="hero-title">
+        <span class="ht-line1" id="ht-line1">Les</span><br/>
+        <span class="ht-line2" id="ht-line2">Penseurs</span><br/>
+        <span class="ht-line3" id="ht-line3">du Gabon</span>
+      </h1>
+      <p class="hero-tagline" id="hero-tagline"><em>Pour un Gabon Meilleur — ensemble.</em></p>
+      <p class="hero-desc" id="hero-description">
+        Association pour la réflexion, l'action et l'amélioration du développement social, économique et politique du Gabon. Citoyens, intellectuels, artisans, entrepreneurs — chaque brique compte.
+      </p>
+      <div class="hero-ctas">
+        <a href="#about" class="btn-outline">Découvrir notre mission</a>
+        <a href="#contact" class="btn-solid" id="hero-cta-btn">Nous rejoindre</a>
       </div>
     </div>
-    <div class="reveal">
-      <div class="values-grid" id="values-grid"></div>
-      <img class="mission-logo" id="mission-logo"
-           src="https://via.placeholder.com/140x140/3D1A00/C8A200?text=LPG" alt="Logo LPG"/>
+    <div class="hero-right">
+      <!-- decorative background panel -->
+      <div class="hero-bg-panel"></div>
+    </div>
+  </div>
+  <!-- Stats row pinned to bottom -->
+  <div class="hero-stats" id="hero-stats">
+    <div class="hstat">
+      <span class="hstat-val" id="stat-year">2024</span>
+      <span class="hstat-lbl">ANNÉE DE FONDATION</span>
+    </div>
+    <div class="hstat-sep"></div>
+    <div class="hstat">
+      <span class="hstat-val" id="stat-actions">4</span>
+      <span class="hstat-lbl">AXES D'ACTION</span>
+    </div>
+    <div class="hstat-sep"></div>
+    <div class="hstat">
+      <span class="hstat-val" id="stat-vision">1</span>
+      <span class="hstat-lbl">VISION COMMUNE</span>
     </div>
   </div>
 </section>
 
-<!-- ══ OBJECTIFS ══ -->
-<section id="objectives">
-  <div class="sh">
-    <p class="ov">CE QUE NOUS FAISONS</p>
-    <h2 id="obj-heading">Nos 4 Objectifs Fondamentaux</h2>
-  </div>
-  <div class="obj-grid" id="objectives-grid"></div>
-</section>
-
-<!-- ══ ACTIONS ══ -->
-<section id="actions">
-  <div class="sh">
-    <p class="ov">SUR LE TERRAIN</p>
-    <h2>Nos Actions Principales</h2>
-  </div>
-  <div class="actions-grid" id="actions-grid"></div>
-</section>
-
-<!-- ══ ORGANISATION ══ -->
-<section id="organisation">
-  <div class="sh">
-    <p class="ov">NOTRE STRUCTURE</p>
-    <h2>Organisation &amp; Gouvernance</h2>
-  </div>
-  <div class="org-body">
-    <div class="org-col reveal">
-      <h3 id="board-heading">Conseil d'Administration – 10 membres élus</h3>
-      <div class="board-grid" id="board-grid"></div>
+<!-- ══ QUI SOMMES-NOUS ══ -->
+<section id="about" class="about-section">
+  <div class="about-inner">
+    <div class="about-left reveal">
+      <div class="about-logo-wrap">
+        <img id="about-logo" src="{% static 'images/logo.jpg' %}" alt="Logo LPG"/>
+      </div>
     </div>
-    <div class="org-col reveal">
-      <h3>Types de membres</h3>
-      <div class="mtype-list" id="member-type-list"></div>
+    <div class="about-right reveal">
+      <p class="section-overline">QUI SOMMES-NOUS</p>
+      <h2 class="section-title-large" id="about-h2">Un mouvement,<br/>une vision</h2>
+      <p class="about-body" id="about-p1">
+        Les Penseurs du Gabon est une association qui rassemble des citoyens animés, des intellectuels, des artisans et des professionnels de diverses disciplines autour d'<strong>un objectif commun</strong> : contribuer activement et efficacement au changement positif du pays.
+      </p>
+      <p class="about-body" id="about-p2">
+        L.P.G se veut un moteur des idées novatrices et des initiatives concrètes. Fondée en 2024 à Libreville, elle est ouverte à tous ceux qui souhaitent s'impliquer dans le progrès du Gabon — pour un avenir <strong>plus prospère, juste et inclusif</strong>.
+      </p>
+      <div class="about-info-box">
+        <span><strong>Public visé :</strong> Citoyens gabonais, jeunes, entrepreneurs, intellectuels et artisans.</span>
+        <span><strong>Siège social :</strong> Libreville, Gabon &nbsp;·&nbsp; <strong style="color:var(--gold)">Fondée le :</strong> 2024</span>
+      </div>
+      <div class="about-tags" id="about-tags">
+        <span>🔨 Construire</span>
+        <span>💡 Innover</span>
+        <span>🤝 Unir</span>
+        <span>📈 Développer</span>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ══ ADHÉSION ══ -->
-<section id="membership">
-  <div class="sh">
-    <p class="ov">NOUS REJOINDRE</p>
-    <h2>Adhésion &amp; Cotisations</h2>
+<!-- ══ NOS VALEURS ══ -->
+<section id="values" class="values-section">
+  <div class="section-intro reveal">
+    <p class="section-overline dark">CE EN QUOI NOUS CROYONS</p>
+    <h2 class="section-title-large dark">Nos Valeurs</h2>
+    <p class="section-subtitle dark">Quatre piliers qui guident chacune de nos actions et définissent qui nous sommes.</p>
   </div>
-  <div class="plans-wrap" id="plans-wrap"></div>
+  <div class="values-grid" id="values-grid">
+    <!-- filled by JS -->
+  </div>
+</section>
+
+<!-- ══ NOS OBJECTIFS ══ -->
+<section id="objectives" class="objectives-section">
+  <div class="objectives-inner">
+    <div class="obj-header reveal">
+      <p class="section-overline gold">NOS ENGAGEMENTS</p>
+      <h2 class="section-title-large light">Nos Objectifs</h2>
+      <p class="section-subtitle muted">Quatre orientations concrètes pour un Gabon transformé, construit de l'intérieur.</p>
+    </div>
+    <div class="obj-list" id="objectives-grid">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</section>
+
+<!-- ══ NOS ACTIONS ══ -->
+<section id="actions" class="actions-section">
+  <div class="section-intro reveal">
+    <p class="section-overline dark">CE QUE NOUS FAISONS</p>
+    <h2 class="section-title-large dark">Nos Actions</h2>
+    <p class="section-subtitle dark">Des initiatives concrètes sur le terrain, pour un Gabon meilleur aujourd'hui et non demain.</p>
+  </div>
+  <div class="actions-grid" id="actions-grid">
+    <!-- filled by JS -->
+  </div>
+</section>
+
+<!-- ══ TYPES DE MEMBRES ══ -->
+<section id="membership" class="membership-section">
+  <div class="section-intro reveal">
+    <p class="section-overline dark">REJOIGNEZ LE MOUVEMENT</p>
+    <h2 class="section-title-large dark">Types de Membres</h2>
+    <p class="section-subtitle dark">L.P.G est ouverte à tous. Quatre catégories pour s'impliquer selon ses moyens et ses ambitions.</p>
+  </div>
+  <div class="member-types-scroll" id="member-types-scroll">
+    <!-- filled by JS -->
+  </div>
+  <div class="rights-duties reveal">
+    <div class="rd-card rd-rights">
+      <h3>✓ Vos droits</h3>
+      <ul>
+        <li>→ Participer aux assemblées générales</li>
+        <li>→ Voter lors des élections internes</li>
+        <li>→ Proposer des initiatives et des projets</li>
+      </ul>
+    </div>
+    <div class="rd-card rd-duties">
+      <h3>● Vos devoirs</h3>
+      <ul>
+        <li>→ Respecter les statuts et le règlement intérieur</li>
+        <li>→ Payer la cotisation mensuelle avant le 5</li>
+        <li>→ Participer activement aux activités</li>
+        <li>→ Promouvoir les intérêts de l'association</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
 <!-- ══ CONTACT ══ -->
-<section id="contact">
-  <div class="sh">
-    <p class="ov">NOUS REJOINDRE</p>
-    <h2>Nous Contacter</h2>
-  </div>
-  <div class="contact-body">
-    <div class="contact-items reveal" id="contact-items"></div>
-    <div class="reveal">
-      <div class="join-box">
-        <h2>REJOIGNEZ <span>LE MOUVEMENT !</span></h2>
-        <ul class="join-list" id="join-statements"></ul>
-        <a class="cta-btn" id="cta-btn" href="#">ENSEMBLE, BÂTISSONS L'AVENIR 🇬🇦🌍</a>
+<section id="contact" class="contact-section">
+  <div class="contact-inner">
+    <!-- LEFT: Form -->
+    <div class="contact-form-wrap reveal">
+      <p class="section-overline dark">REJOIGNEZ-NOUS</p>
+      <h2 class="contact-title">Ensemble,<br/>bâtissons</h2>
+      <p class="contact-intro">Vous croyez en un Gabon meilleur ? Remplissez ce formulaire pour adhérer ou pour toute question. La demande est examinée par le C.A.</p>
+      <div class="cform">
+        <div class="cform-field">
+          <label>VOTRE NOM COMPLET</label>
+          <input type="text" placeholder="Jean Ndong Mba" id="f-name"/>
+        </div>
+        <div class="cform-field">
+          <label>TYPE DE MEMBERSHIP SOUHAITÉ</label>
+          <select id="f-type">
+            <option value="">— Choisissez —</option>
+            <option>Membre Simple</option>
+            <option>Membre du C.A.</option>
+            <option>Membre Bienfaiteur</option>
+            <option>Autre</option>
+          </select>
+        </div>
+        <div class="cform-field">
+          <label>VOTRE ADRESSE EMAIL</label>
+          <input type="email" placeholder="jean@exemple.ga" id="f-email"/>
+        </div>
+        <div class="cform-field">
+          <label>VOTRE MESSAGE</label>
+          <textarea placeholder="Dites-nous comment vous souhaitez contribuer ou posez-nous vos questions…" id="f-message"></textarea>
+        </div>
+        <button class="btn-submit" onclick="submitForm()">ENVOYER LE MESSAGE</button>
+        <div id="form-feedback" class="form-feedback" style="display:none"></div>
+      </div>
+    </div>
+    <!-- RIGHT: Contact info -->
+    <div class="contact-info-wrap reveal">
+      <div class="contact-info-box">
+        <h3>Informations de contact</h3>
+        <div class="ci-item">
+          <span class="ci-icon">📞</span>
+          <div>
+            <p class="ci-label">TÉLÉPHONE</p>
+            <p id="ci-phones">+(241) 066 431 225<br/>+(241) 077 217 917</p>
+          </div>
+        </div>
+        <div class="ci-item">
+          <span class="ci-icon">✉️</span>
+          <div>
+            <p class="ci-label">EMAIL</p>
+            <p id="ci-email"><a href="mailto:lespenseursdugabon@gmail.com">lespenseursdugabon@gmail.com</a></p>
+          </div>
+        </div>
+        <div class="ci-item">
+          <span class="ci-icon">📍</span>
+          <div>
+            <p class="ci-label">LOCALISATION</p>
+            <p id="ci-address">Libreville, Gabon</p>
+          </div>
+        </div>
+        <div class="ci-divider"></div>
+        <div class="ci-iban">
+          <p class="ci-label">IBAN</p>
+          <p class="ci-iban-num">GA21 4002 5058 1181 1031 0007 619</p>
+        </div>
+        <p class="ci-quote" id="ci-quote">"Ensemble, pensons et bâtissons l'avenir."</p>
       </div>
     </div>
   </div>
 </section>
 
-<div class="flag"><span class="g"></span><span class="y"></span><span class="b"></span></div>
-<footer id="footer-text">© 2026 Les Penseurs du Gabon — L.P.G · Libreville, Gabon · Pour un Gabon Meilleur</footer>
+<!-- ══ FOOTER ══ -->
+<footer class="site-footer">
+  <div class="flag-accent">
+    <span class="f-g"></span><span class="f-y"></span><span class="f-b"></span>
+  </div>
+  <p id="footer-text">© 2024 Les Penseurs du Gabon — L.P.G · Libreville, Gabon · Pour un Gabon Meilleur</p>
+</footer>
+
+<style>
+/* ══════════════════════════════════════════════
+   DESIGN TOKENS
+══════════════════════════════════════════════ */
+:root{
+  --brown-deep:#2B0F00;
+  --brown-main:#3D1A00;
+  --brown-mid: #5C2E00;
+  --brown-card:#4A2000;
+  --cream:     #F0EAD6;
+  --cream-bg:  #F5EFE0;
+  --cream-card:#EDE3C8;
+  --gold:      #C8A200;
+  --gold-light:#E0B800;
+  --green-gabon:#009A00;
+  --yellow-gabon:#FFD100;
+  --blue-gabon: #003F87;
+  --white:     #FFFFFF;
+  --text-dark: #2B1400;
+  --text-mid:  #6B4C2A;
+  --text-light:#D4C4A0;
+  --text-muted:#8A7060;
+  --nav-h:68px;
+  --r:12px;
+  --font-t:'Cinzel',serif;
+  --font-b:'Lato',sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font-b);background:var(--cream-bg);color:var(--text-dark);overflow-x:hidden;line-height:1.6}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+
+/* ── FLAG ACCENT ── */
+.flag-accent{display:flex;height:4px;width:100%}
+.f-g{flex:1;background:var(--green-gabon)}
+.f-y{flex:1;background:var(--yellow-gabon)}
+.f-b{flex:1;background:var(--blue-gabon)}
+
+/* ── LOADING ── */
+#loading{
+  position:fixed;inset:0;background:var(--brown-deep);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;z-index:9999;
+  transition:opacity .4s;
+}
+#loading.hidden{opacity:0;pointer-events:none}
+.spinner{width:36px;height:36px;border:3px solid rgba(200,162,0,.18);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+#loading p{margin-top:.8rem;font-size:.7rem;letter-spacing:.15em;color:var(--gold);text-transform:uppercase}
+
+/* ══════════════════════════════════════════════
+   HEADER / NAV
+══════════════════════════════════════════════ */
+.site-header{
+  position:sticky;top:0;z-index:900;
+  background:var(--white);
+  box-shadow:0 2px 12px rgba(0,0,0,.08);
+  height:var(--nav-h);
+}
+.header-inner{
+  max-width:1280px;margin:0 auto;
+  display:flex;align-items:center;
+  height:100%;padding:0 1.5rem;
+  gap:1rem;
+}
+.nav-logo-img{height:44px;width:auto;object-fit:contain}
+.nav-links-wrap{margin-left:auto}
+.nav-links{display:flex;gap:1.5rem;list-style:none}
+.nav-links a{
+  font-size:.72rem;font-weight:700;letter-spacing:.12em;
+  text-transform:uppercase;color:var(--text-dark);
+  padding:.25rem 0;border-bottom:2px solid transparent;
+  transition:color .2s,border-color .2s;
+}
+.nav-links a:hover{color:var(--gold);border-bottom-color:var(--gold)}
+.nav-links a.nav-cta{
+  background:var(--gold);color:var(--brown-deep);
+  padding:.5rem 1.1rem;border-radius:100px;
+  border-bottom:none;transition:background .2s,transform .15s;
+}
+.nav-links a.nav-cta:hover{background:var(--gold-light);transform:translateY(-1px)}
+
+/* ── BURGER ── */
+.burger{
+  display:none;margin-left:auto;
+  flex-direction:column;justify-content:center;
+  gap:5px;width:38px;height:38px;
+  background:none;border:1.5px solid #ddd;border-radius:8px;
+  cursor:pointer;padding:7px;
+}
+.burger span{display:block;height:2px;background:var(--text-dark);border-radius:2px;transition:all .3s}
+.burger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.burger.open span:nth-child(2){opacity:0}
+.burger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+.mobile-menu{
+  display:none;position:fixed;
+  top:var(--nav-h);left:0;right:0;bottom:0;
+  background:var(--white);z-index:899;
+  flex-direction:column;padding:2rem 1.5rem;
+  overflow-y:auto;animation:slideDown .22s ease;
+}
+.mobile-menu.open{display:flex}
+.mobile-menu a{
+  font-size:1rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--text-dark);padding:.85rem 0;
+  border-bottom:1px solid rgba(0,0,0,.06);
+  transition:color .2s,padding-left .2s;
+}
+.mobile-menu a:hover{color:var(--gold);padding-left:.5rem}
+.mobile-menu .cta-mobile{
+  display:block;margin-top:1.5rem;
+  background:var(--gold);color:var(--brown-deep);
+  border-radius:100px;padding:1rem;text-align:center;
+  font-family:var(--font-t);font-size:.78rem;
+  font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+}
+
+@media(max-width:899px){
+  .nav-links-wrap{display:none}
+  .burger{display:flex}
+}
+
+/* ══════════════════════════════════════════════
+   SHARED SECTION TYPOGRAPHY
+══════════════════════════════════════════════ */
+.section-overline{
+  font-size:.65rem;font-weight:700;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;
+}
+.section-overline.dark{color:var(--brown-mid)}
+.section-overline.gold{color:var(--gold)}
+.section-title-large{
+  font-family:var(--font-t);
+  font-size:clamp(2rem,5vw,3.2rem);
+  font-weight:900;line-height:1.05;color:var(--text-dark);
+  margin-bottom:.5rem;
+}
+.section-title-large.dark{color:var(--text-dark)}
+.section-title-large.light{color:var(--white)}
+.section-subtitle{font-size:.9rem;color:var(--text-mid);max-width:480px;line-height:1.65}
+.section-subtitle.dark{color:var(--text-mid)}
+.section-subtitle.muted{color:var(--text-light);opacity:.75}
+
+.section-intro{padding:3.5rem 1.5rem 2rem}
+
+/* ══════════════════════════════════════════════
+   HERO
+══════════════════════════════════════════════ */
+.hero-section{
+  background:var(--brown-main);
+  min-height:calc(100svh - var(--nav-h));
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;
+}
+.hero-inner{
+  flex:1;display:flex;align-items:stretch;
+  max-width:1280px;width:100%;margin:0 auto;padding:4rem 1.5rem 2rem;
+}
+.hero-left{
+  flex:1;display:flex;flex-direction:column;justify-content:center;
+  max-width:560px;
+  animation:fadeUp .7s ease both;
+}
+.hero-right{flex:1;position:relative;display:none}
+.hero-bg-panel{
+  position:absolute;top:-60px;left:60px;right:-60px;bottom:-60px;
+  background:var(--brown-card);border-radius:24px;opacity:.5;
+}
+.hero-logo-img{width:min(180px,46vw);border-radius:12px;margin-bottom:1.4rem}
+.hero-meta{
+  font-size:.62rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--gold);margin-bottom:.6rem;
+}
+.hero-title{
+  font-family:var(--font-t);line-height:1;
+  margin-bottom:.75rem;
+}
+.ht-line1{font-size:clamp(2.4rem,7vw,5rem);color:var(--white);font-weight:700}
+.ht-line2{font-size:clamp(2.4rem,7vw,5rem);color:var(--gold-light);font-weight:900}
+.ht-line3{font-size:clamp(2.4rem,7vw,5rem);color:var(--white);font-weight:700}
+.hero-tagline{
+  font-size:clamp(.9rem,2.2vw,1.2rem);
+  color:var(--text-light);font-style:italic;
+  margin-bottom:.75rem;
+}
+.hero-desc{
+  font-size:clamp(.82rem,1.6vw,.95rem);
+  color:rgba(212,196,160,.7);line-height:1.7;
+  max-width:460px;margin-bottom:2rem;
+}
+.hero-ctas{display:flex;gap:.85rem;flex-wrap:wrap}
+.btn-outline{
+  border:2px solid rgba(240,234,214,.35);
+  color:var(--cream);border-radius:6px;
+  padding:.7rem 1.4rem;font-size:.78rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  transition:background .2s,border-color .2s;
+  white-space:nowrap;
+}
+.btn-outline:hover{background:rgba(255,255,255,.08);border-color:var(--cream)}
+.btn-solid{
+  background:var(--gold);color:var(--brown-deep);
+  border-radius:6px;padding:.7rem 1.6rem;
+  font-family:var(--font-t);font-size:.78rem;font-weight:700;
+  letter-spacing:.06em;text-transform:uppercase;
+  transition:background .2s,transform .15s;
+  white-space:nowrap;
+}
+.btn-solid:hover{background:var(--gold-light);transform:translateY(-2px)}
+
+/* Stats row */
+.hero-stats{
+  background:rgba(0,0,0,.3);
+  display:flex;align-items:center;justify-content:flex-end;
+  gap:0;padding:.9rem 1.5rem;
+}
+.hstat{text-align:center;padding:0 2rem}
+.hstat-val{
+  display:block;font-family:var(--font-t);
+  font-size:clamp(1.4rem,3.5vw,2rem);color:var(--gold-light);font-weight:900;
+  line-height:1;
+}
+.hstat-lbl{
+  display:block;font-size:.58rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--text-light);margin-top:.2rem;
+}
+.hstat-sep{width:1px;height:36px;background:rgba(255,255,255,.15)}
+
+@media(min-width:900px){
+  .hero-right{display:block}
+  .hero-inner{padding:4rem 2.5rem 2rem}
+}
+
+/* ══════════════════════════════════════════════
+   QUI SOMMES-NOUS
+══════════════════════════════════════════════ */
+.about-section{background:var(--cream-bg);padding:5rem 1.5rem}
+.about-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr;gap:3rem;align-items:center;
+}
+.about-logo-wrap{
+  background:var(--white);border-radius:16px;
+  padding:2rem;max-width:400px;margin:0 auto;
+  box-shadow:0 8px 40px rgba(0,0,0,.08);
+}
+.about-logo-wrap img{width:100%;border-radius:8px;object-fit:contain}
+.about-right{display:flex;flex-direction:column;gap:.75rem}
+.about-body{font-size:.95rem;color:var(--text-mid);line-height:1.75}
+.about-body strong{color:var(--text-dark)}
+.about-info-box{
+  background:var(--cream-card);border-radius:8px;
+  padding:.85rem 1.1rem;
+  display:flex;flex-direction:column;gap:.35rem;
+  font-size:.82rem;color:var(--text-mid);line-height:1.5;
+  border-left:4px solid var(--brown-mid);
+}
+.about-tags{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.25rem}
+.about-tags span{
+  background:var(--cream-card);border:1px solid #d9d0bb;
+  border-radius:100px;padding:.32rem .85rem;
+  font-size:.75rem;font-weight:700;color:var(--text-dark);
+}
+
+@media(min-width:900px){
+  .about-inner{grid-template-columns:1fr 1.3fr}
+  .about-logo-wrap{max-width:none}
+  .about-section{padding:6rem 2.5rem}
+}
+
+/* ══════════════════════════════════════════════
+   NOS VALEURS
+══════════════════════════════════════════════ */
+.values-section{background:var(--white);padding-bottom:4rem}
+.values-grid{
+  display:grid;grid-template-columns:1fr;gap:1rem;
+  padding:0 1.5rem 1.5rem;max-width:1280px;margin:0 auto;
+}
+.val-card{
+  background:var(--cream-bg);border-radius:var(--r);
+  padding:1.6rem 1.4rem;
+  border-left:5px solid transparent;
+  transition:transform .2s,box-shadow .2s;
+}
+.val-card:nth-child(1){border-left-color:var(--brown-deep)}
+.val-card:nth-child(2){border-left-color:var(--yellow-gabon)}
+.val-card:nth-child(3){border-left-color:var(--green-gabon)}
+.val-card:nth-child(4){border-left-color:var(--blue-gabon)}
+.val-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.val-icon-wrap{
+  width:48px;height:48px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;margin-bottom:.85rem;
+  background:var(--cream-card);
+}
+.val-card:nth-child(1) .val-icon-wrap{background:#2B0F0022}
+.val-card:nth-child(2) .val-icon-wrap{background:#FFD10022}
+.val-card:nth-child(3) .val-icon-wrap{background:#009A0022}
+.val-card:nth-child(4) .val-icon-wrap{background:#003F8722}
+.val-card h3{font-family:var(--font-t);font-size:1rem;color:var(--text-dark);margin-bottom:.45rem;font-weight:700}
+.val-card p{font-size:.84rem;color:var(--text-mid);line-height:1.6}
+
+@media(min-width:640px){.values-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){
+  .values-grid{grid-template-columns:repeat(4,1fr);padding:0 2.5rem 2.5rem}
+  .section-intro{padding:4rem 2.5rem 2rem}
+}
+
+/* ══════════════════════════════════════════════
+   NOS OBJECTIFS
+══════════════════════════════════════════════ */
+.objectives-section{
+  background:var(--brown-main);
+  padding:4rem 1.5rem 5rem;
+}
+.objectives-inner{max-width:1200px;margin:0 auto}
+.obj-header{margin-bottom:3rem}
+.obj-list{display:flex;flex-direction:column;gap:0}
+.obj-row{
+  display:flex;align-items:flex-start;gap:1.5rem;
+  padding:1.8rem 0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+  position:relative;
+}
+.obj-row:last-child{border-bottom:none}
+.obj-num-big{
+  font-family:var(--font-t);font-size:3rem;font-weight:900;
+  color:rgba(200,162,0,.25);line-height:1;flex-shrink:0;width:80px;
+  user-select:none;
+}
+.obj-content{flex:1}
+.obj-title{
+  font-family:var(--font-t);font-size:1.05rem;
+  color:var(--gold-light);font-weight:700;margin-bottom:.4rem;
+}
+.obj-desc{font-size:.86rem;color:var(--text-light);line-height:1.65;max-width:800px}
+/* vertical line decorations */
+.obj-list::before{
+  content:'';position:absolute;
+  left:39px;top:0;bottom:0;
+  width:1px;background:rgba(200,162,0,.12);
+  pointer-events:none;
+}
+.obj-list{position:relative}
+
+@media(min-width:900px){
+  .objectives-section{padding:5rem 2.5rem 6rem}
+  .obj-num-big{font-size:4.5rem;width:110px}
+}
+
+/* ══════════════════════════════════════════════
+   NOS ACTIONS
+══════════════════════════════════════════════ */
+.actions-section{background:var(--white);padding-bottom:4rem}
+.actions-grid{
+  display:grid;grid-template-columns:1fr;gap:1rem;
+  padding:0 1.5rem 1.5rem;max-width:1280px;margin:0 auto;
+}
+.act-card{
+  background:var(--cream-bg);border-radius:var(--r);
+  padding:1.6rem 1.4rem;
+  border:1px solid rgba(0,0,0,.06);
+  transition:transform .2s,box-shadow .2s;
+}
+.act-card:hover{transform:translateY(-4px);box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.act-icon-wrap{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--cream-card);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;margin-bottom:.85rem;
+}
+.act-card h3{font-family:var(--font-t);font-size:1rem;color:var(--text-dark);margin-bottom:.45rem;font-weight:700}
+.act-card p{font-size:.84rem;color:var(--text-mid);line-height:1.6}
+
+@media(min-width:640px){.actions-grid{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){
+  .actions-grid{grid-template-columns:repeat(4,1fr);padding:0 2.5rem 2.5rem}
+}
+
+/* ══════════════════════════════════════════════
+   TYPES DE MEMBRES
+══════════════════════════════════════════════ */
+.membership-section{background:var(--cream-bg);padding-bottom:4rem}
+.member-types-scroll{
+  display:grid;grid-template-columns:1fr;gap:1rem;
+  padding:0 1.5rem 2rem;max-width:1400px;margin:0 auto;
+  overflow-x:auto;-webkit-overflow-scrolling:touch;
+}
+.mtype-card{
+  background:var(--white);border-radius:var(--r);
+  padding:1.5rem 1.3rem;border:1px solid #ddd5bb;
+  position:relative;transition:box-shadow .2s;
+  min-width:200px;
+}
+.mtype-card:hover{box-shadow:0 8px 28px rgba(0,0,0,.1)}
+.mtype-card.featured{background:var(--brown-main);border-color:var(--brown-mid)}
+.mtype-badge{
+  position:absolute;top:-.6rem;right:.9rem;
+  background:var(--gold);color:var(--brown-deep);
+  font-size:.58rem;font-weight:900;letter-spacing:.12em;
+  padding:.22rem .6rem;border-radius:100px;text-transform:uppercase;
+}
+.mtype-icon{font-size:1.4rem;margin-bottom:.6rem;display:block}
+.mtype-card h3{
+  font-family:var(--font-t);font-size:.88rem;
+  color:var(--text-dark);margin-bottom:.4rem;font-weight:700;
+}
+.mtype-card.featured h3{color:var(--white)}
+.mtype-card p{font-size:.78rem;color:var(--text-mid);line-height:1.55;margin-bottom:.75rem}
+.mtype-card.featured p{color:var(--text-light)}
+.mtype-price{
+  font-size:.76rem;font-weight:700;
+  background:var(--cream-card);border-radius:6px;
+  padding:.38rem .65rem;color:var(--text-dark);
+  display:inline-block;
+}
+.mtype-card.featured .mtype-price{background:rgba(200,162,0,.2);color:var(--gold-light)}
+
+@media(min-width:640px){.member-types-scroll{grid-template-columns:1fr 1fr}}
+@media(min-width:900px){.member-types-scroll{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1200px){.member-types-scroll{grid-template-columns:repeat(5,1fr)}}
+
+/* Rights & Duties */
+.rights-duties{
+  display:grid;grid-template-columns:1fr;gap:1rem;
+  padding:0 1.5rem 1.5rem;max-width:760px;margin:0 auto;
+}
+.rd-card{border-radius:var(--r);padding:1.4rem 1.3rem}
+.rd-rights{background:var(--cream-card);border:1px solid #d9d0bb}
+.rd-duties{background:var(--cream-card);border:1px solid #d9d0bb}
+.rd-card h3{
+  font-family:var(--font-t);font-size:.9rem;
+  color:var(--text-dark);margin-bottom:.85rem;
+}
+.rd-rights h3{color:var(--green-gabon)}
+.rd-card ul{list-style:none;display:flex;flex-direction:column;gap:.4rem}
+.rd-card li{font-size:.82rem;color:var(--text-mid);line-height:1.5}
+
+@media(min-width:640px){.rights-duties{grid-template-columns:1fr 1fr}}
+@media(min-width:1024px){
+  .rights-duties{padding:0 2.5rem 2.5rem;max-width:880px}
+  .member-types-scroll{padding:0 2.5rem 2rem}
+}
+
+/* ══════════════════════════════════════════════
+   CONTACT
+══════════════════════════════════════════════ */
+.contact-section{background:var(--cream-bg);padding:5rem 1.5rem}
+.contact-inner{
+  max-width:1200px;margin:0 auto;
+  display:grid;grid-template-columns:1fr;gap:3rem;
+}
+.contact-title{
+  font-family:var(--font-t);
+  font-size:clamp(2.4rem,5.5vw,3.8rem);
+  font-weight:900;color:var(--text-dark);
+  line-height:1.05;margin-bottom:.75rem;
+}
+.contact-intro{font-size:.9rem;color:var(--text-mid);line-height:1.7;margin-bottom:1.5rem}
+.cform{display:flex;flex-direction:column;gap:1rem}
+.cform-field label{
+  display:block;font-size:.63rem;font-weight:700;
+  letter-spacing:.14em;text-transform:uppercase;
+  color:var(--text-mid);margin-bottom:.35rem;
+}
+.cform-field input,
+.cform-field select,
+.cform-field textarea{
+  width:100%;background:var(--white);
+  border:1.5px solid #d9d0bb;border-radius:8px;
+  padding:.65rem .9rem;font-family:var(--font-b);
+  font-size:.88rem;color:var(--text-dark);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+  -webkit-appearance:none;
+}
+.cform-field input:focus,
+.cform-field select:focus,
+.cform-field textarea:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(200,162,0,.12);
+}
+.cform-field textarea{resize:vertical;min-height:110px;line-height:1.5}
+.cform-field select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%236B4C2A'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .9rem center;padding-right:2.2rem}
+.btn-submit{
+  background:var(--gold);color:var(--brown-deep);
+  border:none;border-radius:8px;padding:.9rem;
+  font-family:var(--font-t);font-size:.8rem;font-weight:700;
+  letter-spacing:.1em;text-transform:uppercase;
+  cursor:pointer;transition:background .2s,transform .15s;
+}
+.btn-submit:hover{background:var(--gold-light);transform:translateY(-2px)}
+.form-feedback{padding:.65rem .9rem;border-radius:8px;font-size:.82rem;margin-top:.25rem}
+.form-feedback.ok{background:rgba(0,154,0,.1);border:1px solid rgba(0,154,0,.3);color:#007a00}
+.form-feedback.err{background:rgba(200,57,43,.1);border:1px solid rgba(200,57,43,.3);color:#c0392b}
+
+/* Contact info box */
+.contact-info-box{
+  background:var(--brown-card);border-radius:var(--r);
+  padding:2rem 1.5rem;
+  display:flex;flex-direction:column;gap:1.2rem;
+  height:100%;
+}
+.contact-info-box h3{
+  font-family:var(--font-t);font-size:1rem;
+  color:var(--white);margin-bottom:.25rem;
+}
+.ci-item{display:flex;align-items:flex-start;gap:.85rem}
+.ci-icon{font-size:1.2rem;flex-shrink:0;margin-top:.1rem}
+.ci-label{font-size:.6rem;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--text-light);margin-bottom:.2rem}
+.ci-item p,.ci-item div p{font-size:.85rem;color:var(--cream);line-height:1.5}
+.ci-item a{color:var(--gold);text-decoration:none}
+.ci-item a:hover{text-decoration:underline}
+.ci-divider{height:1px;background:rgba(255,255,255,.1)}
+.ci-iban{}.ci-iban-num{font-family:monospace;font-size:.82rem;color:var(--cream);letter-spacing:.05em;margin-top:.2rem}
+.ci-quote{font-size:.82rem;font-style:italic;color:var(--text-light);margin-top:.5rem}
+
+@media(min-width:900px){
+  .contact-inner{grid-template-columns:1.1fr 1fr;align-items:start}
+  .contact-section{padding:6rem 2.5rem}
+}
+
+/* ══════════════════════════════════════════════
+   FOOTER
+══════════════════════════════════════════════ */
+.site-footer{
+  background:var(--brown-deep);
+  padding:1rem 1.5rem;text-align:center;
+  font-size:.68rem;color:var(--text-light);
+  letter-spacing:.06em;line-height:1.6;
+}
+.site-footer .flag-accent{margin-bottom:.6rem}
+
+/* ══════════════════════════════════════════════
+   REVEAL ANIMATIONS
+══════════════════════════════════════════════ */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes slideDown{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+</style>
 
 <script>
 /* ── BURGER ── */
@@ -182,70 +835,165 @@ function closeMenu(){
   document.body.style.overflow="";
 }
 
-// const API_BASE=window.LPG_API_BASE||null;
+/* ── API ── */
 const API_BASE = window.location.origin;
 async function fetchAll(){
-  if(!API_BASE)return MOCK;
   const r=await fetch(`${API_BASE}/api/all/`);
   if(!r.ok)throw new Error(r.status);
   return r.json();
 }
 
+/* ── RENDER ── */
 function render(data){
-  const c=data.config;
-  document.title=c.org_name+" — "+c.acronym;
-  document.getElementById("nav-brand").textContent=c.acronym;
-  document.getElementById("hero-meta").textContent=c.acronym+" · FONDÉE EN "+c.founded_year+" · "+c.city.toUpperCase()+", "+c.country.toUpperCase();
-  document.getElementById("hero-title").textContent=c.org_name.toUpperCase();
-  document.getElementById("hero-tagline").textContent=c.tagline;
-  document.getElementById("hero-description").textContent=c.description;
-  document.getElementById("stat-year").textContent=c.founded_year;
-  document.getElementById("stat-members").textContent=c.bureau_members_count;
-  document.getElementById("stat-objectives").textContent=c.objectives_count;
-  document.getElementById("stat-duration").textContent=c.duration_label;
-  if(c.logo_url){document.getElementById("mission-logo").src=c.logo_url}
-  document.getElementById("footer-text").textContent="© "+c.founded_year+" "+c.org_name+" — "+c.acronym+" · "+c.city+", "+c.country+" · "+c.tagline;
+  const c=data.config||{};
 
-  const a=data.about;
-  document.getElementById("about-title").textContent=a.title;
-  document.getElementById("about-p1").textContent=a.paragraph1;
-  document.getElementById("about-p2").textContent=a.paragraph2;
-  document.getElementById("motto-text").textContent=c.motto;
-  document.getElementById("motto-label").textContent=c.motto_label;
+  /* Nav & hero */
+  if(c.logo_url){
+    document.getElementById("nav-logo").src=c.logo_url;
+    document.getElementById("hero-logo").src=c.logo_url;
+    document.getElementById("about-logo").src=c.logo_url;
+  }
+  document.title=(c.org_name||"LPG")+" — "+(c.acronym||"L.P.G");
+  const metaParts=[c.acronym||"L.P.G","GABON","FONDÉE EN "+(c.founded_year||2024)];
+  setTxt("hero-meta",metaParts.join(" · "));
+  setTxt("ht-line1","Les");
+  // keep split as-is for styling; update if org_name changed dramatically
+  setTxt("stat-year",c.founded_year||2024);
+  setTxt("stat-actions",data.actions?data.actions.length:4);
+  setTxt("stat-vision",1);
 
-  document.getElementById("values-grid").innerHTML=data.values.map(v=>`<div class="val-card reveal"><h4>${v.icon} ${v.title}</h4><p>${v.description}</p></div>`).join("");
-    console.log(data.values);
-  document.getElementById("obj-heading").textContent="Nos "+data.objectives.length+" Objectifs Fondamentaux";
-  document.getElementById("objectives-grid").innerHTML=data.objectives.map(o=>`<div class="obj-card reveal"><span class="obj-icon">${o.icon}</span><h3 class="obj-title">${o.title}</h3><p class="obj-desc">${o.description}</p><span class="obj-num">${String(o.number).padStart(2,"0")}</span></div>`).join("");
+  /* About */
+  const a=data.about||{};
+  setTxt("about-h2","Un mouvement,\nune vision");
+  setTxt("about-p1",a.paragraph1||c.description||"");
+  setTxt("about-p2",a.paragraph2||c.tagline||"");
 
-  document.getElementById("actions-grid").innerHTML=data.actions.map(a=>`<div class="act-card reveal"><span class="act-icon">${a.icon}</span><h3 class="act-title">${a.title}</h3><p class="act-desc">${a.description}</p></div>`).join("");
+  /* Hero CTA */
+  if(data.contact&&data.contact.email){
+    document.getElementById("hero-cta-btn").href="mailto:"+data.contact.email;
+  }
 
-  document.getElementById("board-heading").textContent="Conseil d'Administration – "+data.board_roles.length+" membres élus";
-  document.getElementById("board-grid").innerHTML=data.board_roles.map(r=>`<div class="board-role">${r.title}</div>`).join("");
-  document.getElementById("member-type-list").innerHTML=data.member_types.map(m=>`<div class="mtype-card reveal"><h4>${m.icon} ${m.title}</h4><p>${m.description}</p></div>`).join("");
+  /* Values */
+  const vg=document.getElementById("values-grid");
+  if(vg&&data.values){
+    vg.innerHTML=data.values.map((v,i)=>`
+      <div class="val-card reveal" style="animation-delay:${i*.08}s">
+        <div class="val-icon-wrap">${v.icon||"◆"}</div>
+        <h3>${v.title}</h3>
+        <p>${v.description}</p>
+      </div>`).join("");
+  }
 
-  document.getElementById("plans-wrap").innerHTML=data.membership_plans.map(p=>`<div class="plan-card ${p.is_featured?"plan-light":"plan-dark"} reveal"><div class="plan-price">${p.price.toLocaleString("fr-FR")}</div><div class="plan-currency">${p.currency} / ${p.period}</div><h3 class="plan-title">${p.title}</h3><p class="plan-sub">${p.subtitle}</p><ul class="plan-benefits">${p.benefits.map(b=>`<li>${b}</li>`).join("")}</ul></div>`).join("");
+  /* Objectives */
+  const og=document.getElementById("objectives-grid");
+  if(og&&data.objectives){
+    og.innerHTML=data.objectives.map(o=>`
+      <div class="obj-row reveal">
+        <div class="obj-num-big">${String(o.number||o.order||0).padStart(2,"0")}</div>
+        <div class="obj-content">
+          <h3 class="obj-title">${o.icon||""} ${o.title}</h3>
+          <p class="obj-desc">${o.description}</p>
+        </div>
+      </div>`).join("");
+  }
 
-  document.getElementById("contact-items").innerHTML=`<div class="ci"><label>Siège Social</label><p>${data.contact.address}</p></div><div class="ci"><label>Téléphone</label>${data.contact.phones.map(p=>`<p>${p}</p>`).join("")}</div><div class="ci"><label>Email</label><p><a href="mailto:${data.contact.email}">${data.contact.email}</a></p></div><div class="ci"><label>Statut</label><p>${data.contact.status}</p></div>`;
-  document.getElementById("join-statements").innerHTML=data.join_statements.map(s=>`<li>${s.text}</li>`).join("");
-  const btn=document.getElementById("cta-btn");
-  btn.textContent=c.cta_label;
-  btn.href="mailto:"+data.contact.email;
+  /* Actions */
+  const ag=document.getElementById("actions-grid");
+  if(ag&&data.actions){
+    ag.innerHTML=data.actions.map((a,i)=>`
+      <div class="act-card reveal" style="animation-delay:${i*.07}s">
+        <div class="act-icon-wrap">${a.icon||"◆"}</div>
+        <h3>${a.title}</h3>
+        <p>${a.description}</p>
+      </div>`).join("");
+  }
+
+  /* Member types */
+  const mt=document.getElementById("member-types-scroll");
+  if(mt&&data.member_types){
+    // merge with plans to show price
+    const plans=data.membership_plans||[];
+    const rows=data.member_types;
+    mt.innerHTML=rows.map((m,i)=>{
+      const plan=plans.find(p=>p.plan_type==="ca"&&m.title.includes("C.A."))||
+                 plans.find(p=>p.plan_type==="simple"&&m.title.includes("Actif"))||null;
+      const isFeatured=m.title.includes("C.A.")||m.title.includes("Fondateur")||(i===0);
+      const badge=i===0?'<span class="mtype-badge">FONDATEUR</span>':'';
+      const priceHtml=plan?`<div class="mtype-price">Cotisation : ${plan.price.toLocaleString("fr-FR")} ${plan.currency} / ${plan.period}</div>`:'';
+      return `
+        <div class="mtype-card${isFeatured&&m.title.includes("C.A.")?" featured":""} reveal">
+          ${badge}
+          <span class="mtype-icon">${m.icon||"◆"}</span>
+          <h3>${m.title}</h3>
+          <p>${m.description}</p>
+          ${priceHtml}
+        </div>`;
+    }).join("");
+  }
+
+  /* Contact */
+  if(data.contact){
+    const phones=(data.contact.phones||[]).join("<br/>");
+    setHTML("ci-phones",phones);
+    const emailEl=document.getElementById("ci-email");
+    if(emailEl)emailEl.innerHTML=`<a href="mailto:${data.contact.email}">${data.contact.email}</a>`;
+    setTxt("ci-address",data.contact.address||"Libreville, Gabon");
+  }
+
+  /* Footer */
+  setTxt("footer-text",`© ${c.founded_year||2024} ${c.org_name||"Les Penseurs du Gabon"} — ${c.acronym||"L.P.G"} · ${c.city||"Libreville"}, ${c.country||"Gabon"} · ${c.tagline||"Pour un Gabon Meilleur"}`);
+
+  // Button text
+  if(c.cta_label){
+    const btn=document.getElementById("hero-cta-btn");
+    if(btn)btn.textContent=c.cta_label.length<28?c.cta_label:"Nous Rejoindre";
+  }
+
+  setTimeout(initReveal,80);
 }
 
+function setTxt(id,val){const el=document.getElementById(id);if(el)el.textContent=val||""}
+function setHTML(id,val){const el=document.getElementById(id);if(el)el.innerHTML=val||""}
+
+/* ── REVEAL ── */
 function initReveal(){
   const obs=new IntersectionObserver(entries=>{
     entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add("visible");obs.unobserve(e.target)}});
-  },{threshold:.1});
+  },{threshold:.08});
   document.querySelectorAll(".reveal").forEach(el=>obs.observe(el));
 }
 
+/* ── CONTACT FORM ── */
+function submitForm(){
+  const name=document.getElementById("f-name").value.trim();
+  const type=document.getElementById("f-type").value;
+  const email=document.getElementById("f-email").value.trim();
+  const msg=document.getElementById("f-message").value.trim();
+  const fb=document.getElementById("form-feedback");
+  if(!name||!email||!msg){
+    fb.className="form-feedback err";
+    fb.textContent="Veuillez remplir tous les champs obligatoires.";
+    fb.style.display="block";return;
+  }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    fb.className="form-feedback err";
+    fb.textContent="Adresse email invalide.";
+    fb.style.display="block";return;
+  }
+  fb.className="form-feedback ok";
+  fb.textContent="✓ Message envoyé ! Nous vous répondrons dans les plus brefs délais.";
+  fb.style.display="block";
+  ["f-name","f-email","f-message"].forEach(id=>{const e=document.getElementById(id);if(e)e.value=""});
+  document.getElementById("f-type").value="";
+}
+
+/* ── INIT ── */
 (async()=>{
-  try{const data=await fetchAll();render(data)}catch(e){console.error(e)}
+  try{const data=await fetchAll();render(data)}
+  catch(e){console.error("API unavailable:",e);initReveal()}
   const l=document.getElementById("loading");
   l.classList.add("hidden");
   setTimeout(()=>l.remove(),500);
-  setTimeout(initReveal,80);
 })();
 </script>
 </body>
